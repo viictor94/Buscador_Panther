@@ -161,17 +161,26 @@ function setSpinner(done) {
 // ── Carga inicial ──
 window.onload = () => {
   showWelcome();
-  fetch(API)
-    .then(r => r.json())
-    .then(d => {
-      DATA = d;
-      setSpinner(true);
-      setStatus("✓ Lista cargada — " + d.length + " productos", "ready");
-    })
-    .catch(() => {
-      setSpinner(true);
-      setStatus("⚠ Error al cargar datos", "loading");
-    });
+fetch(API)
+  .then(async (r) => {
+    const text = await r.text();   // 👈 clave
+    try {
+      return JSON.parse(text);
+    } catch (e) {
+      console.log("RESPUESTA CRUDA:", text);
+      throw new Error("JSON inválido desde API");
+    }
+  })
+  .then(d => {
+    DATA = d;
+    setSpinner(true);
+    setStatus("✓ Lista cargada — " + d.length + " productos", "ready");
+  })
+  .catch((err) => {
+    console.log(err);
+    setSpinner(true);
+    setStatus("⚠ Error al cargar datos", "loading");
+  });
 };
 
 // ── Welcome ──
