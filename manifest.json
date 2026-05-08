@@ -1,24 +1,20 @@
 {
   "name": "Buscador Panther",
   "short_name": "Buscador",
-  "description": "Precios minoristas Panther Distribuciones",
-  "start_url": "/",
+  "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#1b5e20",
+  "background_color": "#2e7d32",
   "theme_color": "#2e7d32",
   "icons": [
     {
       "src": "https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     },
     {
       "src": "https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
+      "type": "image/png"
     }
   ]
 }
