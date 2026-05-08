@@ -1,7 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Buscador Panther</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:#eef2ee;
+  color:#1a1a1a;
+  min-height:100vh;
+}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,#3a8c3f 0%,#2e7d32 50%,#1b5e20 100%);
+  padding:22px 20px 26px;
+  display:flex;
+  align-items:center;
+  gap:18px;
+}
+.logo-wrap{
+  flex-shrink:0;
+  width:90px;height:90px;
+  background:white;
+  border-radius:16px;
+  padding:5px;
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+  overflow:hidden;
+}
+.logo-wrap img{width:100%;height:100%;object-fit:contain}
+.header-text{color:white}
+.header-text h1{
+  font-size:clamp(16px,4vw,22px);
+  font-weight:900;
+  letter-spacing:.3px;
+  line-height:1.2;
+}
+.header-text p{
+  font-size:clamp(12px,3vw,15px);
+  opacity:.85;
+  margin-top:3px;
+  font-weight:600;
+}
+
+/* SEARCH */
+.search-wrap{
+  background:linear-gradient(180deg,#1b5e20,#2e7d32);
+  padding:14px 16px 18px;
+}
+.search-box{
+  display:flex;
+  align-items:center;
+  background:#fff;
+  border-radius:50px;
+  padding:11px 16px;
+  gap:10px;
+  box-shadow:0 4px 20px rgba(0,0,0,.2);
+}
+.search-box input{
+  border:none;outline:none;flex:1;
+  font-size:16px;
+  font-family:inherit;
+  background:transparent;
+  color:#1a1a1a;
+}
+.clear-btn{
+  background:none;border:none;cursor:pointer;
+  color:#bbb;font-size:22px;
+  display:none;
+}
+.clear-btn.visible{display:block}
+
+/* STATUS */
+.status-bar{
+  background:#2e7d32;
+  color:#c8e6c9;
+  font-size:12px;
+  font-weight:700;
+  padding:6px 16px;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.status-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:#ffca28;
+}
+
+/* CONTAINER */
+.container{padding:16px;display:flex;flex-direction:column;gap:14px}
+
+/* CARD */
+.card{
+  background:white;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,.09);
+  border:1px solid #e0e8e0;
+  position:relative;
+}
+.card-body{padding:18px}
+.card-nombre{
+  font-weight:800;
+  text-align:center;
+  margin-bottom:14px;
+}
+.monto-principal{
+  font-size:32px;
+  font-weight:900;
+  color:#2e7d32;
+  text-align:center;
+}
+.badge-cuotas{
+  display:inline-block;
+  margin-top:6px;
+  font-size:12px;
+  background:#e8f5e9;
+  padding:4px 10px;
+  border-radius:20px;
+  font-weight:700;
+}
+
+/* EMPTY */
+.empty{
+  text-align:center;
+  color:#999;
+  margin-top:40px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div class="logo-wrap">
+    <img src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png">
+  </div>
+  <div class="header-text">
+    <h1>Buscador Precios Minorista</h1>
+    <p>Panther Distribuciones</p>
+  </div>
+</div>
+
+<div class="search-wrap">
+  <div class="search-box">
+    <input id="search" placeholder="Buscar producto...">
+    <button class="clear-btn" id="clearBtn">×</button>
+  </div>
+</div>
+
+<div class="status-bar">
+  <div class="status-dot" id="dot"></div>
+  <span id="statusText">Cargando...</span>
+</div>
+
+<div class="container" id="results">
+  <div class="empty">Escribí para buscar productos</div>
+</div>
+
+<script>
+let DATA = [];
+const API_URL = "https://script.google.com/macros/s/AKfycbwT3k-j686myvD9lIZh1AC0JlgCYoFdLkIUSufvssgceVVyeZufJXqiQFzf-KCPCZz5/exec";
+
+window.onload = loadData;
+
+/* 🔥 FETCH CORREGIDO */
 function loadData(){
   fetch(API_URL)
     .then(async (r) => {
-      const text = await r.text();   // 👈 clave para debug real
+      const text = await r.text();
 
       try {
         return JSON.parse(text);
@@ -25,3 +196,46 @@ function loadData(){
         "⚠ Error cargando datos";
     });
 }
+
+/* SEARCH */
+document.getElementById("search").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase().trim();
+
+  if(!q){
+    document.getElementById("results").innerHTML =
+      `<div class="empty">Escribí para buscar productos</div>`;
+    return;
+  }
+
+  const res = DATA.filter(p =>
+    (p.CODIGO && p.CODIGO.toLowerCase().includes(q)) ||
+    (p.DETALLE && p.DETALLE.toLowerCase().includes(q))
+  );
+
+  render(res, q);
+});
+
+function render(data, q){
+  const cont = document.getElementById("results");
+
+  if(!data.length){
+    cont.innerHTML = `<div class="empty">Sin resultados para "<b>${q}</b>"</div>`;
+    return;
+  }
+
+  cont.innerHTML = data.map(p => `
+    <div class="card">
+      <div class="card-body">
+        <div class="card-nombre">${p.DETALLE || ""}</div>
+        <div class="monto-principal">${p["PRECIO TARJETA 3 CUOTAS"] || ""}</div>
+        <div style="text-align:center">
+          <span class="badge-cuotas">3 cuotas sin interés</span>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+</script>
+
+</body>
+</html>
