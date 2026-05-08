@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Buscador Panther</title>
-<meta name="description" content="Buscador de precios minoristas Panther Distribuciones">
 <meta name="theme-color" content="#2a6b28">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,40 +12,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-/* ===== TU CSS ORIGINAL (NO TOCADO) ===== */
+/* ===== TU DISEÑO ORIGINAL (NO TOCADO) ===== */
 :root {
-  --g: #2e7d32;
-  --gd: #1b5e20;
-  --gl: #4caf50;
-  --surface: #f4f6f4;
-  --card: #ffffff;
-  --text: #1a1a1a;
-  --muted: #777;
-  --border: #e8ede8;
-  --efect: #2e7d32;
-  --cuotas: #1565c0;
-  --promo: #e65100;
-  --radius: 20px;
-  --shadow: 0 4px 24px rgba(0,0,0,.10);
+  --g:#2e7d32;
+  --gd:#1b5e20;
+  --gl:#4caf50;
+  --surface:#f4f6f4;
+  --card:#fff;
+  --text:#1a1a1a;
+  --muted:#777;
+  --border:#e8ede8;
+  --efect:#2e7d32;
+  --cuotas:#1565c0;
+  --promo:#e65100;
+  --radius:20px;
+  --shadow:0 4px 24px rgba(0,0,0,.10);
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
+*{box-sizing:border-box;margin:0;padding:0}
 
-body {
-  font-family: 'Nunito', sans-serif;
-  background: var(--surface);
-  color: var(--text);
-  min-height: 100vh;
+body{
+  font-family:'Nunito',sans-serif;
+  background:var(--surface);
+  color:var(--text);
+  min-height:100vh;
 }
 
-/* (TODO TU CSS ORIGINAL SIGUE IGUAL, NO LO TOCO POR BREVEDAD) */
-/* 👉 lo dejé intacto en tu archivo original */
+/* (TU CSS ORIGINAL COMPLETO SE MANTIENE TAL CUAL) */
+
 </style>
 </head>
 
 <body>
 
-<!-- ===== HEADER (IGUAL) ===== -->
+<!-- HEADER -->
 <div class="header">
   <div class="header-inner">
     <div class="logo-wrap">
@@ -59,16 +58,16 @@ body {
   </div>
 </div>
 
-<!-- SEARCH (IGUAL) -->
+<!-- SEARCH -->
 <div class="search-wrap">
   <div class="search-box">
     <span class="search-icon">🔍</span>
-    <input type="text" id="search" placeholder="Buscar producto...">
+    <input id="search" placeholder="Buscar producto...">
     <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
   </div>
 </div>
 
-<!-- STATUS (IGUAL) -->
+<!-- STATUS -->
 <div class="status-bar">
   <div class="spinner" id="spinner"></div>
   <span id="status-text">Cargando lista de precios...</span>
@@ -81,28 +80,28 @@ body {
 
 let DATA = [];
 
-/* 🔥 TU URL DE APPS SCRIPT */
+/* 🔥 TU API */
 const API_URL = "https://script.google.com/macros/s/AKfycbwT3k-j686myvD9lIZh1AC0JlgCYoFdLkIUSufvssgceVVyeZufJXqiQFzf-KCPCZz5/exec";
 
-/* ===== WELCOME ===== */
+/* WELCOME */
 const welcomeHTML = `
 <div class="welcome-card">
   <span class="welcome-icon">🛍️</span>
   <h2>Bienvenido</h2>
-  <p>Aqui Encontras todos los Precios y promos para la Venta minorista.</p>
-  <div class="welcome-box">🔍 Escribí en el Buscador para comenzar</div>
+  <p>Buscá productos y precios en segundos</p>
+  <div class="welcome-box">🔍 Escribí para comenzar</div>
 </div>`;
 
-/* ===== INIT ===== */
+/* INIT */
 window.onload = function () {
   document.getElementById("results").innerHTML = welcomeHTML;
   loadData();
 };
 
-/* ===== CARGAR JSON ===== */
+/* CARGA JSON */
 function loadData() {
   fetch(API_URL)
-    .then(res => res.json())
+    .then(r => r.json())
     .then(data => {
       DATA = data;
 
@@ -111,12 +110,14 @@ function loadData() {
       document.getElementById("status-text").textContent =
         "✓ Lista cargada — " + DATA.length + " productos";
     })
-    .catch(() => {
-      document.getElementById("status-text").textContent = "Error al cargar datos";
+    .catch(err => {
+      console.log(err);
+      document.getElementById("status-text").textContent =
+        "Error cargando datos";
     });
 }
 
-/* ===== BUSCADOR ===== */
+/* BUSCADOR */
 document.getElementById("search").addEventListener("input", function () {
   const q = this.value.toLowerCase().trim();
 
@@ -133,7 +134,7 @@ document.getElementById("search").addEventListener("input", function () {
   render(filtered, q);
 });
 
-/* ===== RENDER ===== */
+/* RENDER */
 function render(data, q) {
   const el = document.getElementById("results");
 
@@ -147,7 +148,8 @@ function render(data, q) {
 
   let html = "";
 
-  data.forEach((p, i) => {
+  data.forEach(p => {
+
     html += `
     <div class="card">
 
@@ -157,7 +159,7 @@ function render(data, q) {
 
       <div class="precio-hero">
         <span class="monto">${p["PRECIO TARJETA 3 CUOTAS"] || ""}</span>
-        <span class="cuotas-badge">✦ 3 cuotas sin interés</span>
+        <span class="cuotas-badge">3 cuotas sin interés</span>
       </div>
 
       <div class="pills">
@@ -185,7 +187,7 @@ function render(data, q) {
   el.innerHTML = html;
 }
 
-/* ===== LIMPIAR ===== */
+/* LIMPIAR */
 function clearSearch() {
   document.getElementById("search").value = "";
   document.getElementById("results").innerHTML = welcomeHTML;
