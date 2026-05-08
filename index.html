@@ -36,46 +36,63 @@ font-weight:700;cursor:pointer
 
 <div class="container">
   <input class="search" id="search" placeholder="Buscar producto...">
-  <div id="results"></div>
+  <div id="results">Cargando productos...</div>
 </div>
 
 <script>
 
+// 🔴 PEGÁ ACÁ TU URL DEL /exec (NO el googleusercontent)
 const API = "https://script.google.com/macros/s/AKfycbwU0TY_AtQXlGGC7-Yu8Ye62U9ww2o9GzC7_XjmPrbodXkWk7xw958GFr2tyQWfMW7s/exec";
 
 let DATA = [];
 
+// Cargar datos
 fetch(API)
 .then(r => r.json())
-.then(d => DATA = d);
+.then(d => {
+  DATA = d;
+  render("");
+});
 
+// Render buscador
+function render(q){
+  const res = document.getElementById("results");
+  res.innerHTML = "";
+
+  let filtrados = DATA.filter(p =>
+    (p.nombre || "").toLowerCase().includes(q)
+  );
+
+  if(filtrados.length === 0){
+    res.innerHTML = "No se encontraron resultados";
+    return;
+  }
+
+  filtrados.forEach(p => {
+
+    res.innerHTML += `
+    <div class="card">
+      <div class="nombre">${p.nombre || ""}</div>
+      <div class="precio">${p.lista || ""}</div>
+
+      <button class="copy-btn"
+        data-text="${p.nombre} - ${p.lista}"
+        onclick="copiar(this.dataset.text)">
+        Copiar
+      </button>
+    </div>
+    `;
+  });
+}
+
+// Buscar en tiempo real
 document.getElementById("search").addEventListener("input", function(){
-
-const q = this.value.toLowerCase();
-const res = document.getElementById("results");
-res.innerHTML = "";
-
-DATA.forEach(p => {
-
-if(!p.nombre.toLowerCase().includes(q)) return;
-
-res.innerHTML += `
-<div class="card">
-  <div class="nombre">${p.nombre}</div>
-  <div class="precio">${p.lista}</div>
-
-  <button class="copy-btn" onclick="copiar('${p.nombre} - ${p.lista}')">
-    Copiar
-  </button>
-</div>
-`;
-
+  render(this.value.toLowerCase());
 });
 
-});
-
+// Copiar seguro
 function copiar(text){
-navigator.clipboard.writeText(text);
+  navigator.clipboard.writeText(text);
 }
 
 </script>
