@@ -3,44 +3,123 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <title>Buscador Panther</title>
-<meta name="description" content="Buscador de precios minoristas Panther Distribuciones">
 <meta name="theme-color" content="#2a6b28">
-
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Buscador%20Panther%22%2C%22short_name%22%3A%22Buscador%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%232a6b28%22%2C%22theme_color%22%3A%22%232a6b28%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fi.ibb.co%2F8nvntcR3%2FLogos-Clasico-Nueva-Fuente-2.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-/* 🔥 TODO TU CSS IGUAL (NO SE TOCÓ NADA) */
 :root {
-  --g:#2e7d32;
-  --gd:#1b5e20;
-  --gl:#4caf50;
-  --surface:#f4f6f4;
-  --card:#fff;
-  --text:#1a1a1a;
-  --muted:#777;
-  --border:#e8ede8;
-  --efect:#2e7d32;
-  --cuotas:#1565c0;
-  --promo:#e65100;
-  --radius:20px;
-  --shadow:0 4px 24px rgba(0,0,0,.10);
+  --g:#2e7d32; --gd:#1b5e20; --gl:#4caf50;
+  --surface:#f4f6f4; --card:#fff; --text:#1a1a1a;
+  --muted:#777; --border:#e8ede8;
+  --efect:#2e7d32; --cuotas:#1565c0; --promo:#e65100;
+  --radius:20px; --shadow:0 4px 24px rgba(0,0,0,.10);
 }
+*{box-sizing:border-box;margin:0;padding:0}
+input,button{font-size:16px!important;font-family:'Nunito',sans-serif}
+body{font-family:'Nunito',sans-serif;background:var(--surface);color:var(--text);-webkit-text-size-adjust:100%;touch-action:manipulation;min-height:100vh}
 
-/* (TODO EL RESTO DE TU CSS SIN CAMBIOS) */
-body{font-family:'Nunito',sans-serif;background:var(--surface);}
+/* HEADER */
+.header{background:linear-gradient(160deg,var(--g),var(--gd));padding:20px 20px 0;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-40px;right:-40px;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.06);pointer-events:none}
+.header::after{content:'';position:absolute;bottom:20px;left:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.04);pointer-events:none}
+.header-inner{max-width:700px;margin:0 auto;display:flex;align-items:center;gap:16px;position:relative;z-index:1}
+.logo-wrap{background:rgba(255,255,255,.15);border-radius:16px;padding:8px;flex-shrink:0;backdrop-filter:blur(4px);border:1px solid rgba(255,255,255,.2)}
+.logo{width:120px;height:auto;display:block}
+.header-text{flex:1;min-width:0}
+.header .title{font-size:32px;font-weight:900;text-align:center;color:white;line-height:1.15;letter-spacing:-.3px}
+.header .subtitle{font-size:23px;text-align:center;color:rgba(255,255,255,.75);margin-top:3px;font-weight:600}
+
+/* SEARCH */
+.search-wrap{background:linear-gradient(160deg,var(--g),var(--gd));padding:16px 20px 24px}
+.search-box{display:flex;align-items:center;background:white;border-radius:50px;padding:0 18px;gap:10px;box-shadow:0 8px 32px rgba(0,0,0,.22),0 2px 8px rgba(0,0,0,.10);width:100%;transition:box-shadow .2s}
+.search-box:focus-within{box-shadow:0 8px 32px rgba(0,0,0,.28),0 0 0 3px rgba(76,175,80,.35)}
+.search-icon{font-size:20px;color:var(--g);flex-shrink:0}
+.search-box input{border:none;outline:none;font-size:16px!important;padding:17px 0;flex:1;background:transparent;color:#222;font-family:'Nunito',sans-serif;font-weight:600}
+.search-box input::placeholder{color:#bbb;font-weight:400}
+.clear-btn{background:#eee;border:none;cursor:pointer;color:#888;font-size:14px;width:28px;height:28px;border-radius:50%;display:none;align-items:center;justify-content:center;font-weight:900;transition:background .15s,color .15s;flex-shrink:0}
+.clear-btn:hover{background:#ddd;color:#444}
+.clear-btn.visible{display:flex}
+
+/* STATUS */
+.status-bar{background:var(--gd);padding:8px 20px;display:flex;align-items:center;gap:8px;min-height:34px}
+.spinner{width:12px;height:12px;border:2.5px solid rgba(255,255,255,.2);border-top-color:#ff6b6b;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+.spinner.done{border-top-color:#69f0ae;animation:none;border-color:rgba(255,255,255,.15)}
+@keyframes spin{to{transform:rotate(360deg)}}
+#status-text{font-size:12px;font-weight:700;font-family:'Nunito',sans-serif;transition:color .4s}
+#status-text.loading{color:#ff6b6b}
+#status-text.ready{color:#69f0ae}
+#status-text.info{color:rgba(255,255,255,.75);font-weight:600}
+
+/* CONTAINER */
+.container{padding:16px 4% 32px;display:flex;flex-direction:column;gap:14px;max-width:700px;margin:0 auto}
+
+/* CARD */
+.card{background:var(--card);border-radius:var(--radius);padding:20px 18px 16px;position:relative;overflow:hidden;box-shadow:var(--shadow);animation:fadeUp .2s ease both;border:1px solid var(--border)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.card:nth-child(1){animation-delay:.00s}.card:nth-child(2){animation-delay:.04s}.card:nth-child(3){animation-delay:.08s}.card:nth-child(4){animation-delay:.12s}.card:nth-child(5){animation-delay:.16s}.card:nth-child(n+6){animation-delay:.20s}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(180deg,var(--gl),var(--g));border-radius:4px 0 0 4px}
+.card-tag{position:absolute;top:0;right:0;background:linear-gradient(135deg,var(--gl),var(--g));color:white;font-size:10px;padding:4px 14px;font-weight:800;border-radius:0 var(--radius) 0 14px;letter-spacing:.3px}
+.card-nombre{font-size:15px;font-weight:800;color:var(--text);line-height:1.4;margin:10px 0 16px;padding:0 8px 0 10px;text-align:center}
+
+/* PRECIO HERO */
+.precio-hero{display:flex;flex-direction:column;align-items:center;gap:6px;margin-bottom:16px;padding-bottom:16px;border-bottom:2px dashed var(--border)}
+.precio-hero .monto{font-size:36px;font-weight:900;color:var(--g);line-height:1;letter-spacing:-1px}
+.cuotas-badge{font-size:11px;color:var(--g);background:#e8f5e9;padding:4px 14px;border-radius:20px;font-weight:800;letter-spacing:.2px;border:1px solid #c8e6c9}
+.cuotas-detalle{font-size:14px;font-weight:800;color:#333}
+
+/* PILLS */
+.pills{display:flex;gap:10px;width:100%;justify-content:center}
+.pill{background:#fafafa;border-radius:16px;padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;flex:1;border:1px solid var(--border);transition:transform .15s,box-shadow .15s}
+.pill:active{transform:scale(.97)}
+.pill .plabel{font-size:11px;color:var(--muted);font-weight:700;text-align:center;line-height:1.3;letter-spacing:.1px}
+.pill-efect{border-top:3px solid var(--efect)}
+.pill .pval-efect{font-size:15px;font-weight:900;color:white;background:var(--efect);padding:5px 14px;border-radius:20px}
+.pill-cuotas{border-top:3px solid var(--cuotas)}
+.pill .pval-cuotas{font-size:15px;font-weight:900;color:var(--cuotas);background:#e3f2fd;padding:5px 14px;border-radius:20px}
+.pill-promo{border-top:3px solid var(--promo)}
+.pill .pval-promo{font-size:15px;font-weight:900;color:var(--promo);background:#fff3e0;padding:5px 14px;border-radius:20px}
+.card-cod{font-size:11px;color:#ccc;margin-top:10px;text-align:center;font-weight:600}
+
+/* EMPTY / WELCOME */
+.empty{text-align:center;color:var(--muted);font-size:16px;margin-top:52px;font-weight:600}
+.empty-icon{font-size:44px;margin-bottom:10px}
+.welcome-card{background:white;border-radius:24px;padding:44px 28px;text-align:center;box-shadow:var(--shadow);margin-top:10px;border:1px solid var(--border);animation:fadeUp .3s ease both}
+.welcome-icon{font-size:56px;margin-bottom:18px;display:block}
+.welcome-card h2{font-size:28px;color:var(--g);margin-bottom:12px;font-weight:900;letter-spacing:-.3px}
+.welcome-card p{font-size:15px;color:#666;line-height:1.6;font-weight:600}
+.welcome-box{margin-top:28px;background:linear-gradient(135deg,#e8f5e9,#f1f8e9);color:var(--g);padding:18px;border-radius:16px;font-weight:800;font-size:16px;border:1.5px dashed #a5d6a7}
+
+@media(max-width:480px){
+  .header .title{font-size:19px}
+  .logo{width:64px}
+  .logo-wrap{padding:6px;border-radius:12px}
+  .card-nombre{font-size:14px}
+  .precio-hero .monto{font-size:32px}
+  .pill .plabel{font-size:10px}
+  .pill .pval-efect,.pill .pval-cuotas,.pill .pval-promo{font-size:13px;padding:5px 10px}
+  .pills{gap:7px}
+}
+@media(max-width:360px){
+  .pills{flex-direction:column}
+  .pill{flex-direction:row;justify-content:space-between;padding:10px 14px}
+  .pill-efect,.pill-cuotas,.pill-promo{border-top:none;border-left:3px solid}
+  .pill-efect{border-color:var(--efect)}.pill-cuotas{border-color:var(--cuotas)}.pill-promo{border-color:var(--promo)}
+}
 </style>
 </head>
-
 <body>
 
-<!-- 🔵 TU HTML IGUAL -->
 <div class="header">
   <div class="header-inner">
     <div class="logo-wrap">
-      <img src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png" class="logo">
+      <img src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png" class="logo" alt="Panther">
     </div>
     <div class="header-text">
       <div class="title">Buscador Precios Minorista</div>
@@ -52,111 +131,136 @@ body{font-family:'Nunito',sans-serif;background:var(--surface);}
 <div class="search-wrap">
   <div class="search-box">
     <span class="search-icon">🔍</span>
-    <input type="text" id="search" placeholder="Buscar producto...">
-    <button class="clear-btn" id="clearBtn">✕</button>
+    <input type="text" id="search" placeholder="Buscar producto..." autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="clear-btn" id="clearBtn" aria-label="Limpiar">✕</button>
   </div>
 </div>
 
 <div class="status-bar">
   <div class="spinner" id="spinner"></div>
-  <span id="status-text">Cargando lista de precios...</span>
+  <span id="status-text" class="loading">Cargando lista de precios...</span>
 </div>
 
 <div class="container" id="results"></div>
 
 <script>
-
 let DATA = [];
+const API = "https://script.google.com/macros/s/AKfycbxIJ9zm8FWZz4IjRz-EREfzu4cTBO0s9amiUHjhtPS_1XHxiVk2QUQWHU56b4mmPoRc/exec";
 
-/* 🔴 IMPORTANTE: TU URL REAL DE APPS SCRIPT */
-const API = "https://script.google.com/macros/s/AKfycbxIJ9zm8FWZz4IjRz-EREfzu4cTBO0s9amiUHjhtPS_1XHxiVk2QUQWHU56b4mmPoRc/exec;
+// ── Helpers de status ──
+function setStatus(msg, cls) {
+  const el = document.getElementById("status-text");
+  el.textContent = msg;
+  el.className = cls;
+}
+function setSpinner(done) {
+  const s = document.getElementById("spinner");
+  if (done) s.classList.add("done"); else s.classList.remove("done");
+}
 
-/* ─────────── CARGA CORREGIDA ─────────── */
+// ── Carga inicial ──
 window.onload = () => {
   showWelcome();
-
   fetch(API)
-    .then(async (r) => {
-      const text = await r.text();
-
-      try {
-        return JSON.parse(text);
-      } catch (e) {
-        console.log("RESPUESTA CRUDA:", text);
-        throw new Error("JSON inválido");
-      }
+    .then(r => r.json())
+    .then(d => {
+      DATA = d;
+      setSpinner(true);
+      setStatus("✓ Lista cargada — " + d.length + " productos", "ready");
     })
-    .then(data => {
-      DATA = data;
-
-      document.getElementById("spinner").classList.add("done");
-      document.getElementById("status-text").className = "ready";
-      document.getElementById("status-text").textContent =
-        "✓ Lista cargada — " + data.length + " productos";
-
-      setTimeout(() => {
-        document.getElementById("status-text").className = "info";
-        document.getElementById("status-text").textContent = "Listo para buscar";
-      }, 2500);
-    })
-    .catch(err => {
-      console.log(err);
-      document.getElementById("status-text").className = "loading";
-      document.getElementById("status-text").textContent = "✗ Error al cargar datos";
+    .catch(() => {
+      setSpinner(true);
+      setStatus("⚠ Error al cargar datos", "loading");
     });
 };
 
-/* ─────────── WELCOME ─────────── */
+// ── Welcome ──
 function showWelcome() {
   document.getElementById("results").innerHTML = `
     <div class="welcome-card">
       <span class="welcome-icon">🛍️</span>
       <h2>Bienvenido</h2>
-      <p>Consultá precios minoristas y promociones</p>
+      <p>Consultá precios minoristas<br>y promociones al instante</p>
       <div class="welcome-box">🔍 Escribí para comenzar</div>
-    </div>
-  `;
+    </div>`;
 }
 
-/* ─────────── SEARCH ─────────── */
+// ── Limpiar ──
+function clearSearch() {
+  document.getElementById("search").value = "";
+  document.getElementById("clearBtn").classList.remove("visible");
+  showWelcome();
+  // restaurar contador al estado de lista cargada
+  if (DATA.length) setStatus("✓ Lista cargada — " + DATA.length + " productos", "ready");
+  document.getElementById("search").focus();
+}
+
+document.getElementById("clearBtn").addEventListener("click", clearSearch);
+
+// ── Input ──
 document.getElementById("search").addEventListener("input", e => {
   const q = e.target.value.toLowerCase().trim();
-  document.getElementById("clearBtn").style.display = q ? "flex" : "none";
-
-  if (!q) return showWelcome();
-
+  document.getElementById("clearBtn").classList.toggle("visible", q.length > 0);
+  if (!q) { clearSearch(); return; }
   const res = DATA.filter(p =>
-    JSON.stringify(p).toLowerCase().includes(q)
+    (p.CODIGO  && p.CODIGO.toLowerCase().includes(q)) ||
+    (p.DETALLE && p.DETALLE.toLowerCase().includes(q))
   );
-
   render(res, q);
 });
 
-document.getElementById("clearBtn").onclick = () => {
-  document.getElementById("search").value = "";
-  showWelcome();
-};
+// ── Calcular cuota ──
+function cuota(v, n) {
+  const x = parseFloat(String(v).replace(/[^0-9.,]/g, "").replace(",", "."));
+  return isNaN(x) ? "" : "de $" + Math.round(x / n).toLocaleString("es-AR") + " c/u";
+}
 
-/* ─────────── RENDER ─────────── */
+// ── Render ──
 function render(data, q) {
-  const el = document.getElementById("results");
-
   if (!data.length) {
-    el.innerHTML = `<div class="empty">Sin resultados "${q}"</div>`;
+    setStatus("Sin resultados", "info");
+    document.getElementById("results").innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">🔍</div>
+        Sin resultados para "<strong>${q}</strong>"
+      </div>`;
     return;
   }
 
-  el.innerHTML = data.map(p => `
+  setStatus(data.length === 1 ? "1 resultado" : data.length + " resultados", "info");
+
+  document.getElementById("results").innerHTML = data.map(p => {
+    const c3 = cuota(p["PRECIO TARJETA 3 CUOTAS"], 3);
+    const ef  = p["PRECIO EFECTIVO / TRANSFER"] || "—";
+    const c6  = p["PRECIO TARJETA 6 CUOTAS"]    || "—";
+    const pr  = p["Promo 9 o 12 cuotas"]        || "—";
+    return `
     <div class="card">
+      ${p.CODIGO ? `<div class="card-tag">Cód: ${p.CODIGO}</div>` : ""}
       <div class="card-nombre">${p.DETALLE || ""}</div>
       <div class="precio-hero">
         <div class="monto">${p["PRECIO TARJETA 3 CUOTAS"] || ""}</div>
+        <span class="cuotas-badge">✦ 3 cuotas sin interés</span>
+        ${c3 ? `<span class="cuotas-detalle">${c3}</span>` : ""}
       </div>
-    </div>
-  `).join("");
+      <div class="pills">
+        <div class="pill pill-efect">
+          <span class="plabel">🖥 Efectivo / Transf. 🔥</span>
+          <span class="pval-efect">${ef}</span>
+        </div>
+        <div class="pill pill-cuotas">
+          <span class="plabel">💳 6 cuotas</span>
+          <span class="pval-cuotas">${c6}</span>
+        </div>
+        <div class="pill pill-promo">
+          <span class="plabel">💳 9 o 12 cuotas</span>
+          <span class="pval-promo">${pr}</span>
+        </div>
+      </div>
+      ${p.CODIGO ? `<div class="card-cod">Código: ${p.CODIGO}</div>` : ""}
+    </div>`;
+  }).join("");
 }
-
 </script>
-
 </body>
 </html>
