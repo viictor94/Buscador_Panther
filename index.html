@@ -6,7 +6,6 @@
 <title>Buscador Panther</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
   background:#eef2ee;
@@ -14,232 +13,197 @@ body{
   min-height:100vh;
 }
 
-/* HEADER */
+/* ── HEADER ── */
 .header{
-  background:linear-gradient(135deg,#3a8c3f 0%,#2e7d32 50%,#1b5e20 100%);
-  padding:22px 20px 26px;
+  background:linear-gradient(135deg,#3a8c3f,#2e7d32,#1b5e20);
+  padding:20px 24px;
   display:flex;
   align-items:center;
-  gap:18px;
+  gap:20px;
 }
-.logo-wrap{
+.logo-box{
   flex-shrink:0;
-  width:90px;height:90px;
-  background:white;
-  border-radius:16px;
-  padding:5px;
-  box-shadow:0 4px 16px rgba(0,0,0,.25);
+  width:100px; height:100px;
+  background:#fff;
+  border-radius:18px;
+  padding:6px;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
   overflow:hidden;
 }
-.logo-wrap img{width:100%;height:100%;object-fit:contain}
-.header-text{color:white}
+.logo-box img{
+  width:100%;height:100%;
+  object-fit:contain;display:block;
+}
+.header-text{color:#fff}
 .header-text h1{
-  font-size:clamp(16px,4vw,22px);
+  font-size:clamp(17px,4.5vw,24px);
   font-weight:900;
-  letter-spacing:.3px;
   line-height:1.2;
 }
 .header-text p{
-  font-size:clamp(12px,3vw,15px);
-  opacity:.85;
-  margin-top:3px;
+  font-size:clamp(13px,3.2vw,17px);
   font-weight:600;
+  opacity:.88;
+  margin-top:4px;
 }
 
-/* SEARCH */
+/* ── SEARCH ── */
 .search-wrap{
-  background:linear-gradient(180deg,#1b5e20,#2e7d32);
-  padding:14px 16px 18px;
+  background:linear-gradient(180deg,#1d6b21,#2e7d32);
+  padding:12px 16px 16px;
 }
 .search-box{
-  display:flex;
-  align-items:center;
-  background:#fff;
-  border-radius:50px;
-  padding:11px 16px;
-  gap:10px;
-  box-shadow:0 4px 20px rgba(0,0,0,.2);
+  display:flex;align-items:center;
+  background:#fff;border-radius:50px;
+  padding:10px 16px;gap:10px;
+  box-shadow:0 3px 16px rgba(0,0,0,.18);
 }
-.search-box svg{flex-shrink:0}
 .search-box input{
   border:none;outline:none;flex:1;
-  font-size:16px;
-  font-family:inherit;
-  background:transparent;
-  color:#1a1a1a;
+  font-size:16px;font-family:inherit;
+  background:transparent;color:#1a1a1a;
   min-width:0;
 }
 .search-box input::placeholder{color:#bbb}
 .clear-btn{
   background:none;border:none;cursor:pointer;
-  color:#bbb;font-size:22px;line-height:1;
+  color:#ccc;font-size:22px;line-height:1;
   padding:0;display:none;flex-shrink:0;
-  transition:color .2s;
 }
-.clear-btn:hover{color:#888}
 .clear-btn.visible{display:block}
 
-/* STATUS */
+/* ── STATUS ── */
 .status-bar{
   background:#2e7d32;
   color:#c8e6c9;
-  font-size:12px;
-  font-weight:700;
+  font-size:12px;font-weight:700;
   padding:6px 16px;
-  display:flex;
-  align-items:center;
-  gap:6px;
+  display:flex;align-items:center;gap:7px;
 }
-.status-dot{
-  width:8px;height:8px;border-radius:50%;
-  background:#69f0ae;flex-shrink:0;
+.sdot{width:8px;height:8px;border-radius:50%;background:#ffca28;flex-shrink:0}
+
+/* ── CONTAINER ── */
+.container{
+  padding:16px;
+  display:flex;flex-direction:column;
+  align-items:center;   /* cards centradas */
+  gap:14px;
 }
 
-/* CONTAINER */
-.container{padding:16px;display:flex;flex-direction:column;gap:14px}
-
-/* WELCOME */
+/* ── WELCOME ── */
 .welcome{
   text-align:center;padding:50px 20px;color:#666;
+  width:100%;
 }
-.welcome .wi{font-size:48px;margin-bottom:14px}
+.welcome .wi{font-size:46px;margin-bottom:12px}
 .welcome h3{font-size:20px;font-weight:800;color:#2e7d32;margin-bottom:6px}
 .welcome p{font-size:14px;color:#888;margin-top:4px}
 
-/* CARD */
+/* ── CARD ── */
 .card{
-  background:white;
-  border-radius:20px;
+  background:#fff;
+  border-radius:22px;
   overflow:hidden;
-  box-shadow:0 4px 24px rgba(0,0,0,.09);
-  border:1px solid #e0e8e0;
+  box-shadow:0 6px 28px rgba(0,0,0,.10);
+  border:1px solid #e0e9e0;
+  width:100%;
+  max-width:520px;      /* no ocupa todo el ancho */
   position:relative;
 }
 
+/* tag código */
 .card-tag{
-  position:absolute;top:12px;right:12px;
+  position:absolute;top:14px;right:14px;
   font-size:11px;font-weight:800;
-  color:white;background:#2e7d32;
+  color:#fff;background:#2e7d32;
   padding:4px 12px;border-radius:20px;
   letter-spacing:.3px;
+  white-space:nowrap;
 }
 
-.card-body{padding:18px 16px 16px}
+.card-body{padding:18px 18px 14px}
 
 .card-nombre{
   font-weight:800;font-size:14px;
-  text-align:center;
-  margin:8px 0 16px;
-  line-height:1.4;
-  padding-right:80px; /* espacio para el tag */
+  text-align:center;line-height:1.4;
+  margin:6px 0 16px;
+  padding-right:85px; /* espacio para tag */
   color:#111;
 }
 
-/* PRECIO PRINCIPAL */
-.precio-hero{
-  text-align:center;
-  margin-bottom:14px;
-}
-.monto-principal{
-  font-size:clamp(26px,7vw,34px);
-  font-weight:900;
-  color:#2e7d32;
+/* precio principal */
+.precio-hero{text-align:center;margin-bottom:14px}
+.monto-big{
+  font-size:clamp(28px,8vw,38px);
+  font-weight:900;color:#2e7d32;
   letter-spacing:.5px;
 }
-.badge-cuotas{
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  background:#e8f5e9;
-  color:#2e7d32;
-  border-radius:20px;
-  padding:4px 12px;
-  font-size:12px;
-  font-weight:800;
-  margin-top:6px;
+.badge-3c{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#e8f5e9;color:#2e7d32;
+  border-radius:20px;padding:4px 13px;
+  font-size:12px;font-weight:800;margin-top:7px;
 }
-.badge-cuotas::before{content:"✦";font-size:10px}
-.por-cuota{
-  font-size:13px;color:#666;font-weight:600;
-  margin-top:5px;
-}
+.badge-3c::before{content:"✦";font-size:9px}
+.por-cuota{font-size:13px;color:#666;font-weight:600;margin-top:5px}
 
-/* PILLS GRID */
-.pills-grid{
+/* pills en fila */
+.pills-row{
   display:grid;
   grid-template-columns:repeat(3,1fr);
   gap:8px;
-  margin-top:4px;
 }
-.pill-box{
-  border-radius:12px;
-  padding:10px 6px;
-  text-align:center;
-  border:1.5px solid;
+.pill{
+  border-radius:12px;padding:9px 5px;
+  text-align:center;border:1.5px solid;
 }
-.pill-label{
-  font-size:10px;font-weight:700;
-  margin-bottom:5px;display:flex;
-  align-items:center;justify-content:center;gap:3px;
+.pill-lbl{
+  font-size:10px;font-weight:700;color:#555;
+  margin-bottom:5px;line-height:1.3;
 }
-.pill-monto{
-  font-size:clamp(13px,3.5vw,16px);
-  font-weight:900;
-  display:block;
+.pill-val{
+  font-size:clamp(12px,3.2vw,15px);
+  font-weight:900;display:block;
 }
 
-/* Efectivo */
-.pill-efect{
-  background:#f1fbf2;border-color:#2e7d32;
-}
-.pill-efect .pill-label{color:#555}
-.pill-efect .pill-monto{
-  background:#2e7d32;color:white;
-  border-radius:8px;padding:4px 6px;
+/* efectivo – verde sólido */
+.p-efect{background:#f1fbf2;border-color:#2e7d32}
+.p-efect .pill-val{
+  background:#2e7d32;color:#fff;
+  border-radius:8px;padding:3px 6px;
   display:inline-block;
 }
+/* 6 cuotas – azul */
+.p-6c{background:#f0f7ff;border-color:#1565c0}
+.p-6c .pill-val{color:#1565c0}
+/* 9-12 – naranja */
+.p-12c{background:#fff8f0;border-color:#e65100}
+.p-12c .pill-val{color:#e65100}
 
-/* 6 cuotas */
-.pill-cuotas{
-  background:#f0f7ff;border-color:#1565c0;
-}
-.pill-cuotas .pill-label{color:#555}
-.pill-cuotas .pill-monto{color:#1565c0}
-
-/* 9-12 cuotas */
-.pill-promo{
-  background:#fff8f0;border-color:#e65100;
-}
-.pill-promo .pill-label{color:#555}
-.pill-promo .pill-monto{color:#e65100}
-
-/* Código inferior */
-.card-footer{
-  text-align:center;
-  padding:8px 16px 12px;
-  font-size:12px;color:#aaa;font-weight:600;
+/* footer código */
+.card-foot{
+  text-align:center;padding:6px 16px 12px;
+  font-size:12px;color:#bbb;font-weight:600;
 }
 
-/* Sin resultados */
+/* sin resultados */
 .empty{
   text-align:center;padding:40px 20px;
-  color:#999;font-size:14px;
+  color:#999;font-size:14px;width:100%;
 }
 .empty span{font-size:36px;display:block;margin-bottom:10px}
 
-/* Responsive para pantallas muy chicas */
 @media(max-width:360px){
-  .pills-grid{gap:5px}
-  .pill-box{padding:8px 4px}
-  .pill-monto{font-size:12px}
+  .pills-row{gap:5px}
+  .pill{padding:7px 3px}
 }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div class="logo-wrap">
-    <img src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png" alt="Panther" onerror="this.parentElement.innerHTML='🐾'">
+  <div class="logo-box">
+    <img src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png" alt="Panther">
   </div>
   <div class="header-text">
     <h1>Buscador Precios Minorista</h1>
@@ -258,8 +222,8 @@ body{
 </div>
 
 <div class="status-bar" id="status">
-  <div class="status-dot" id="dot" style="background:#ffca28"></div>
-  <span id="statusText">Cargando...</span>
+  <div class="sdot" id="dot"></div>
+  <span id="stxt">Cargando...</span>
 </div>
 
 <div class="container" id="results">
@@ -273,106 +237,75 @@ body{
 
 <script>
 let DATA = [];
-const API_URL = "https://script.google.com/macros/s/AKfycbwT3k-j686myvD9lIZh1AC0JlgCYoFdLkIUSufvssgceVVyeZufJXqiQFzf-KCPCZz5/exec";
+const API = "https://script.google.com/macros/s/AKfycbwT3k-j686myvD9lIZh1AC0JlgCYoFdLkIUSufvssgceVVyeZufJXqiQFzf-KCPCZz5/exec";
 
-window.onload = loadData;
-
-function loadData(){
-  fetch(API_URL)
-    .then(r => r.json())
-    .then(data => {
-      DATA = data;
-      document.getElementById("dot").style.background = "#69f0ae";
-      document.getElementById("statusText").textContent = "✓ Lista cargada — " + DATA.length + " productos";
-    })
-    .catch(() => {
-      document.getElementById("dot").style.background = "#ff5252";
-      document.getElementById("statusText").textContent = "⚠ Error cargando datos";
-    });
-}
-
-function clearSearch(){
-  const inp = document.getElementById("search");
-  inp.value = "";
-  document.getElementById("clearBtn").classList.remove("visible");
-  document.getElementById("results").innerHTML = `
-    <div class="welcome">
-      <div class="wi">🛍️</div>
-      <h3>Bienvenido</h3>
-      <p>Buscá productos y precios en segundos</p>
-      <p>🔍 Escribí para comenzar</p>
-    </div>`;
-  inp.focus();
-}
-
-document.getElementById("search").addEventListener("input", e => {
-  const q = e.target.value.toLowerCase().trim();
-  document.getElementById("clearBtn").classList.toggle("visible", q.length > 0);
-  if(!q){ clearSearch(); return; }
-  const res = DATA.filter(p =>
-    (p.CODIGO && p.CODIGO.toLowerCase().includes(q)) ||
-    (p.DETALLE && p.DETALLE.toLowerCase().includes(q))
-  );
-  render(res, q);
+window.onload = () => fetch(API).then(r=>r.json()).then(d=>{
+  DATA=d;
+  document.getElementById("dot").style.background="#69f0ae";
+  document.getElementById("stxt").textContent="✓ Lista cargada — "+d.length+" productos";
+}).catch(()=>{
+  document.getElementById("dot").style.background="#ff5252";
+  document.getElementById("stxt").textContent="⚠ Error cargando datos";
 });
 
-function calcCuota(precio, n){
-  const v = parseFloat(String(precio).replace(/[^0-9.,]/g,"").replace(",","."));
-  if(isNaN(v)) return "";
-  return "de $" + Math.round(v/n).toLocaleString("es-AR") + " c/u";
+function clearSearch(){
+  const i=document.getElementById("search");
+  i.value="";
+  document.getElementById("clearBtn").classList.remove("visible");
+  document.getElementById("results").innerHTML=`<div class="welcome"><div class="wi">🛍️</div><h3>Bienvenido</h3><p>Buscá productos y precios en segundos</p><p>🔍 Escribí para comenzar</p></div>`;
+  i.focus();
 }
 
-function render(data, q){
-  const cont = document.getElementById("results");
+document.getElementById("search").addEventListener("input",e=>{
+  const q=e.target.value.toLowerCase().trim();
+  document.getElementById("clearBtn").classList.toggle("visible",q.length>0);
+  if(!q){clearSearch();return;}
+  const res=DATA.filter(p=>
+    (p.CODIGO&&p.CODIGO.toLowerCase().includes(q))||
+    (p.DETALLE&&p.DETALLE.toLowerCase().includes(q))
+  );
+  render(res,q);
+});
 
-  // status
-  document.getElementById("statusText").textContent =
-    data.length === 0 ? "Sin resultados" :
-    data.length === 1 ? "1 resultado" :
-    data.length + " resultados";
+function cuota(v,n){
+  const x=parseFloat(String(v).replace(/[^0-9.,]/g,"").replace(",","."));
+  return isNaN(x)?"":"de $"+Math.round(x/n).toLocaleString("es-AR")+" c/u";
+}
 
+function render(data,q){
+  const st=document.getElementById("stxt");
+  st.textContent=data.length===0?"Sin resultados":data.length===1?"1 resultado":data.length+" resultados";
   if(!data.length){
-    cont.innerHTML = `<div class="empty"><span>🔍</span>Sin resultados para "<strong>${q}</strong>"</div>`;
+    document.getElementById("results").innerHTML=`<div class="empty"><span>🔍</span>Sin resultados para "<strong>${q}</strong>"</div>`;
     return;
   }
-
-  let html = "";
-  data.forEach(p => {
-    const cuota3 = calcCuota(p["PRECIO TARJETA 3 CUOTAS"], 3);
-    html += `
+  document.getElementById("results").innerHTML=data.map(p=>`
     <div class="card">
-      ${p.CODIGO ? `<div class="card-tag">Cód: ${p.CODIGO}</div>` : ""}
+      ${p.CODIGO?`<div class="card-tag">Cód: ${p.CODIGO}</div>`:""}
       <div class="card-body">
         <div class="card-nombre">${p.DETALLE||""}</div>
         <div class="precio-hero">
-          <div class="monto-principal">${p["PRECIO TARJETA 3 CUOTAS"]||""}</div>
-          <div><span class="badge-cuotas">3 cuotas sin interés</span></div>
-          ${cuota3 ? `<div class="por-cuota">${cuota3}</div>` : ""}
+          <div class="monto-big">${p["PRECIO TARJETA 3 CUOTAS"]||""}</div>
+          <div><span class="badge-3c">3 cuotas sin interés</span></div>
+          ${p["PRECIO TARJETA 3 CUOTAS"]?`<div class="por-cuota">${cuota(p["PRECIO TARJETA 3 CUOTAS"],3)}</div>`:""}
         </div>
-        <div class="pills-grid">
-          ${p["PRECIO EFECTIVO / TRANSFER"] ? `
-          <div class="pill-box pill-efect">
-            <div class="pill-label">🖥 Efectivo / Transf.🔥</div>
-            <span class="pill-monto">${p["PRECIO EFECTIVO / TRANSFER"]}</span>
-          </div>` : "<div></div>"}
-
-          ${p["PRECIO TARJETA 6 CUOTAS"] ? `
-          <div class="pill-box pill-cuotas">
-            <div class="pill-label">💳 6 cuotas</div>
-            <span class="pill-monto">${p["PRECIO TARJETA 6 CUOTAS"]}</span>
-          </div>` : "<div></div>"}
-
-          ${p["Promo 9 o 12 cuotas"] ? `
-          <div class="pill-box pill-promo">
-            <div class="pill-label">💳 9 o 12 cuotas</div>
-            <span class="pill-monto">${p["Promo 9 o 12 cuotas"]}</span>
-          </div>` : "<div></div>"}
+        <div class="pills-row">
+          <div class="pill p-efect">
+            <div class="pill-lbl">🖥 Efectivo / Transf.🔥</div>
+            <span class="pill-val">${p["PRECIO EFECTIVO / TRANSFER"]||"—"}</span>
+          </div>
+          <div class="pill p-6c">
+            <div class="pill-lbl">💳 6 cuotas</div>
+            <span class="pill-val">${p["PRECIO TARJETA 6 CUOTAS"]||"—"}</span>
+          </div>
+          <div class="pill p-12c">
+            <div class="pill-lbl">💳 9 o 12 cuotas</div>
+            <span class="pill-val">${p["Promo 9 o 12 cuotas"]||"—"}</span>
+          </div>
         </div>
       </div>
-      ${p.CODIGO ? `<div class="card-footer">Código: ${p.CODIGO}</div>` : ""}
-    </div>`;
-  });
-  cont.innerHTML = html;
+      ${p.CODIGO?`<div class="card-foot">Código: ${p.CODIGO}</div>`:""}
+    </div>`).join("");
 }
 </script>
 </body>
