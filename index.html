@@ -5,14 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
 <title>Buscador Panther</title>
-<meta name="theme-color" content="#2a6b28">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <style>
-/* ===== TU DISEÑO ORIGINAL (NO TOCADO) ===== */
 :root {
   --g:#2e7d32;
   --gd:#1b5e20;
@@ -35,114 +31,185 @@ body{
   font-family:'Nunito',sans-serif;
   background:var(--surface);
   color:var(--text);
-  min-height:100vh;
 }
 
-/* (TU CSS ORIGINAL COMPLETO SE MANTIENE TAL CUAL) */
+/* HEADER */
+.header{
+  background:linear-gradient(160deg,var(--g),var(--gd));
+  padding:20px;
+  text-align:center;
+  color:white;
+}
+.logo{width:90px}
 
+/* SEARCH */
+.search-wrap{padding:15px}
+.search-box{
+  display:flex;
+  background:#fff;
+  border-radius:50px;
+  padding:10px 15px;
+  box-shadow:var(--shadow);
+}
+.search-box input{
+  border:none;
+  outline:none;
+  flex:1;
+  font-size:16px;
+}
+
+/* STATUS */
+.status-bar{
+  padding:10px;
+  background:var(--gd);
+  color:white;
+  font-size:12px;
+}
+
+/* CONTAINER */
+.container{
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* CARD */
+.card{
+  background:white;
+  border-radius:var(--radius);
+  padding:15px;
+  box-shadow:var(--shadow);
+  border:1px solid var(--border);
+}
+
+.card-tag{
+  font-size:11px;
+  color:white;
+  background:var(--g);
+  display:inline-block;
+  padding:3px 10px;
+  border-radius:10px;
+  margin-bottom:8px;
+}
+
+.card-nombre{
+  font-weight:800;
+  text-align:center;
+  margin-bottom:10px;
+}
+
+/* PRECIO */
+.precio-hero{
+  text-align:center;
+  margin-bottom:10px;
+}
+
+.monto{
+  font-size:28px;
+  font-weight:900;
+  color:var(--g);
+}
+
+.cuotas-badge{
+  font-size:11px;
+  color:var(--g);
+  display:block;
+}
+
+/* PILLS */
+.pills{
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.pill{
+  font-size:12px;
+  padding:6px 10px;
+  border-radius:12px;
+  background:#f1f1f1;
+}
+
+/* COLORS */
+.pill-efect{background:#e8f5e9;color:var(--efect)}
+.pill-cuotas{background:#e3f2fd;color:var(--cuotas)}
+.pill-promo{background:#fff3e0;color:var(--promo)}
+
+.empty{
+  text-align:center;
+  padding:40px;
+  color:var(--muted);
+}
 </style>
 </head>
 
 <body>
 
-<!-- HEADER -->
 <div class="header">
-  <div class="header-inner">
-    <div class="logo-wrap">
-      <img src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png" class="logo">
-    </div>
-    <div class="header-text">
-      <div class="title">Buscador Precios Minorista</div>
-      <div class="subtitle">Panther Distribuciones</div>
-    </div>
-  </div>
+  <img class="logo" src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png">
+  <h2>Buscador Panther</h2>
 </div>
 
-<!-- SEARCH -->
 <div class="search-wrap">
   <div class="search-box">
-    <span class="search-icon">🔍</span>
     <input id="search" placeholder="Buscar producto...">
-    <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
   </div>
 </div>
 
-<!-- STATUS -->
-<div class="status-bar">
-  <div class="spinner" id="spinner"></div>
-  <span id="status-text">Cargando lista de precios...</span>
-</div>
+<div class="status-bar" id="status">Cargando...</div>
 
-<!-- RESULTADOS -->
 <div class="container" id="results"></div>
 
 <script>
 
 let DATA = [];
 
-/* 🔥 TU API */
 const API_URL = "https://script.google.com/macros/s/AKfycbwT3k-j686myvD9lIZh1AC0JlgCYoFdLkIUSufvssgceVVyeZufJXqiQFzf-KCPCZz5/exec";
 
-/* WELCOME */
-const welcomeHTML = `
-<div class="welcome-card">
-  <span class="welcome-icon">🛍️</span>
-  <h2>Bienvenido</h2>
-  <p>Buscá productos y precios en segundos</p>
-  <div class="welcome-box">🔍 Escribí para comenzar</div>
-</div>`;
-
 /* INIT */
-window.onload = function () {
-  document.getElementById("results").innerHTML = welcomeHTML;
+window.onload = () => {
   loadData();
+  document.getElementById("results").innerHTML = `<div class="empty">Buscá un producto</div>`;
 };
 
-/* CARGA JSON */
-function loadData() {
+/* LOAD */
+function loadData(){
   fetch(API_URL)
     .then(r => r.json())
     .then(data => {
       DATA = data;
-
-      document.getElementById("spinner").classList.add("done");
-      document.getElementById("status-text").className = "ready";
-      document.getElementById("status-text").textContent =
-        "✓ Lista cargada — " + DATA.length + " productos";
+      document.getElementById("status").innerText = "✔ " + DATA.length + " productos cargados";
     })
-    .catch(err => {
-      console.log(err);
-      document.getElementById("status-text").textContent =
-        "Error cargando datos";
+    .catch(() => {
+      document.getElementById("status").innerText = "Error cargando datos";
     });
 }
 
-/* BUSCADOR */
-document.getElementById("search").addEventListener("input", function () {
-  const q = this.value.toLowerCase().trim();
+/* SEARCH */
+document.getElementById("search").addEventListener("input", e => {
+  const q = e.target.value.toLowerCase().trim();
 
-  if (!q) {
-    document.getElementById("results").innerHTML = welcomeHTML;
+  if(!q){
+    document.getElementById("results").innerHTML = `<div class="empty">Buscá un producto</div>`;
     return;
   }
 
-  const filtered = DATA.filter(p =>
+  const res = DATA.filter(p =>
     (p.CODIGO && p.CODIGO.toLowerCase().includes(q)) ||
     (p.DETALLE && p.DETALLE.toLowerCase().includes(q))
   );
 
-  render(filtered, q);
+  render(res);
 });
 
 /* RENDER */
-function render(data, q) {
-  const el = document.getElementById("results");
+function render(data){
 
-  if (!data.length) {
-    el.innerHTML = `
-      <div class='empty'>
-        🔎 Sin resultados para "<b>${q}</b>"
-      </div>`;
+  if(!data.length){
+    document.getElementById("results").innerHTML =
+      `<div class="empty">Sin resultados</div>`;
     return;
   }
 
@@ -158,39 +225,27 @@ function render(data, q) {
       <div class="card-nombre">${p.DETALLE || ""}</div>
 
       <div class="precio-hero">
-        <span class="monto">${p["PRECIO TARJETA 3 CUOTAS"] || ""}</span>
+        <div class="monto">${p["PRECIO TARJETA 3 CUOTAS"] || ""}</div>
         <span class="cuotas-badge">3 cuotas sin interés</span>
       </div>
 
       <div class="pills">
 
-        ${p["PRECIO EFECTIVO / TRANSFER"] ? `
-        <div class="pill pill-efect">
-          💵 ${p["PRECIO EFECTIVO / TRANSFER"]}
-        </div>` : ""}
+        ${p["PRECIO EFECTIVO / TRANSFER"] ?
+        `<div class="pill pill-efect">Efectivo: ${p["PRECIO EFECTIVO / TRANSFER"]}</div>` : ""}
 
-        ${p["PRECIO TARJETA 6 CUOTAS"] ? `
-        <div class="pill pill-cuotas">
-          💳 ${p["PRECIO TARJETA 6 CUOTAS"]}
-        </div>` : ""}
+        ${p["PRECIO TARJETA 6 CUOTAS"] ?
+        `<div class="pill pill-cuotas">6 cuotas: ${p["PRECIO TARJETA 6 CUOTAS"]}</div>` : ""}
 
-        ${p["Promo 9 o 12 cuotas"] ? `
-        <div class="pill pill-promo">
-          🔥 ${p["Promo 9 o 12 cuotas"]}
-        </div>` : ""}
+        ${p["Promo 9 o 12 cuotas"] ?
+        `<div class="pill pill-promo">Promo: ${p["Promo 9 o 12 cuotas"]}</div>` : ""}
 
       </div>
 
     </div>`;
   });
 
-  el.innerHTML = html;
-}
-
-/* LIMPIAR */
-function clearSearch() {
-  document.getElementById("search").value = "";
-  document.getElementById("results").innerHTML = welcomeHTML;
+  document.getElementById("results").innerHTML = html;
 }
 
 </script>
