@@ -35,41 +35,60 @@ font-weight:700;cursor:pointer
   <div id="results">Cargando productos...</div>
 </div>
 
-<script>
+// <script>
 
 // 🔴 PEGÁ ACÁ TU /exec
 const API = "https://script.google.com/macros/s/AKfycbwJIlZqeDGl9NVK3F3zRwMsjhUxjP_eDzTEo4MtK8-T8P8knCMEU85UORjkx8mphSbf/exec";
 
 let DATA = [];
 
-// Cargar datos
+document.getElementById("results").innerHTML = "Cargando productos...";
+
+// FETCH CON DEBUG REAL
 fetch(API)
-  .then(r => r.json())
-  .then(d => {
-    DATA = d;
-    render("");
+  .then(async (res) => {
+    console.log("STATUS:", res.status);
+
+    const text = await res.text();
+    console.log("RESPUESTA CRUDA:", text);
+
+    try {
+      DATA = JSON.parse(text);
+      console.log("DATA OK:", DATA);
+
+      render("");
+    } catch (e) {
+      console.error("ERROR JSON:", e);
+      document.getElementById("results").innerHTML =
+        "Error: la API no devolvió JSON válido";
+    }
+  })
+  .catch(err => {
+    console.error("ERROR FETCH:", err);
+    document.getElementById("results").innerHTML =
+      "Error cargando datos (API falló)";
   });
 
-// Buscar
-document.getElementById("search").addEventListener("input", function(){
+// BUSCADOR
+document.getElementById("search").addEventListener("input", function () {
   render(this.value.toLowerCase());
 });
 
-// Render
+// RENDER
 function render(q){
   const res = document.getElementById("results");
   res.innerHTML = "";
 
-  if (!DATA.length) {
-    res.innerHTML = "Cargando...";
+  if (!DATA || DATA.length === 0) {
+    res.innerHTML = "No hay datos cargados";
     return;
   }
 
-  let filtrados = DATA.filter(p =>
+  const filtrados = DATA.filter(p =>
     (p.nombre || "").toLowerCase().includes(q)
   );
 
-  if (filtrados.length === 0){
+  if (filtrados.length === 0) {
     res.innerHTML = "No se encontraron resultados";
     return;
   }
@@ -82,19 +101,13 @@ function render(q){
 
         <button class="copy-btn"
           data-text="${p.nombre} - ${p.lista}"
-          onclick="copiar(this.dataset.text)">
+          onclick="navigator.clipboard.writeText(this.dataset.text)">
           Copiar
         </button>
       </div>
     `;
   });
 }
-
-// copiar
-function copiar(text){
-  navigator.clipboard.writeText(text);
-}
-
 </script>
 
 </body>
