@@ -6,13 +6,9 @@
 
 <title>Buscador Panther</title>
 
-<link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2e7d32">
-
 <style>
 body{margin:0;font-family:Arial;background:#f4f6f4}
 .header{background:#2e7d32;color:#fff;padding:20px;text-align:center}
-.logo{width:90px;border-radius:12px}
 .container{max-width:700px;margin:auto;padding:15px}
 .search{width:100%;padding:14px;border-radius:12px;border:none;margin-top:10px}
 .card{background:#fff;margin-top:12px;padding:14px;border-radius:14px;box-shadow:0 4px 12px rgba(0,0,0,.08);position:relative}
@@ -25,12 +21,12 @@ padding:6px 10px;border-radius:8px;
 font-weight:700;cursor:pointer
 }
 </style>
+
 </head>
 
 <body>
 
 <div class="header">
-  <img class="logo" src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png">
   <h2>Buscador Panther</h2>
 </div>
 
@@ -41,56 +37,60 @@ font-weight:700;cursor:pointer
 
 <script>
 
-// 🔴 PEGÁ ACÁ TU URL DEL /exec (NO el googleusercontent)
-const API = "https://script.google.com/macros/s/AKfycbwU0TY_AtQXlGGC7-Yu8Ye62U9ww2o9GzC7_XjmPrbodXkWk7xw958GFr2tyQWfMW7s/exec";
+// 🔴 PEGÁ ACÁ TU /exec
+const API = "https://script.google.com/macros/s/AKfycbwJIlZqeDGl9NVK3F3zRwMsjhUxjP_eDzTEo4MtK8-T8P8knCMEU85UORjkx8mphSbf/exec";
 
 let DATA = [];
 
 // Cargar datos
 fetch(API)
-.then(r => r.json())
-.then(d => {
-  DATA = d;
-  render("");
+  .then(r => r.json())
+  .then(d => {
+    DATA = d;
+    render("");
+  });
+
+// Buscar
+document.getElementById("search").addEventListener("input", function(){
+  render(this.value.toLowerCase());
 });
 
-// Render buscador
+// Render
 function render(q){
   const res = document.getElementById("results");
   res.innerHTML = "";
+
+  if (!DATA.length) {
+    res.innerHTML = "Cargando...";
+    return;
+  }
 
   let filtrados = DATA.filter(p =>
     (p.nombre || "").toLowerCase().includes(q)
   );
 
-  if(filtrados.length === 0){
+  if (filtrados.length === 0){
     res.innerHTML = "No se encontraron resultados";
     return;
   }
 
   filtrados.forEach(p => {
-
     res.innerHTML += `
-    <div class="card">
-      <div class="nombre">${p.nombre || ""}</div>
-      <div class="precio">${p.lista || ""}</div>
+      <div class="card">
+        <div class="nombre">${p.nombre || ""}</div>
+        <div class="precio">${p.lista || ""}</div>
 
-      <button class="copy-btn"
-        data-text="${p.nombre} - ${p.lista}"
-        onclick="copiar(this.dataset.text)">
-        Copiar
-      </button>
-    </div>
+        <button class="copy-btn"
+          data-text="${p.nombre} - ${p.lista}"
+          onclick="copiar(this.dataset.text)">
+          Copiar
+        </button>
+      </div>
     `;
   });
 }
 
-// Buscar en tiempo real
-document.getElementById("search").addEventListener("input", function(){
-  render(this.value.toLowerCase());
-});
-
-// Copiar seguro
+// copiar
 function copiar(text){
   navigator.clipboard.writeText(text);
 }
