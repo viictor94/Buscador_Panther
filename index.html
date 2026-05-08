@@ -35,79 +35,76 @@ font-weight:700;cursor:pointer
   <div id="results">Cargando productos...</div>
 </div>
 
-// <script>
+<script>
 
-// 🔴 PEGÁ ACÁ TU /exec
+// 🔴 PEGÁ TU /exec AQUÍ
 const API = "https://script.google.com/macros/s/AKfycbwJIlZqeDGl9NVK3F3zRwMsjhUxjP_eDzTEo4MtK8-T8P8knCMEU85UORjkx8mphSbf/exec";
 
 let DATA = [];
 
-document.getElementById("results").innerHTML = "Cargando productos...";
-
-// FETCH CON DEBUG REAL
+// CARGA DE DATOS
 fetch(API)
-  .then(async (res) => {
-    console.log("STATUS:", res.status);
-
-    const text = await res.text();
-    console.log("RESPUESTA CRUDA:", text);
-
-    try {
-      DATA = JSON.parse(text);
-      console.log("DATA OK:", DATA);
-
-      render("");
-    } catch (e) {
-      console.error("ERROR JSON:", e);
-      document.getElementById("results").innerHTML =
-        "Error: la API no devolvió JSON válido";
-    }
-  })
-  .catch(err => {
-    console.error("ERROR FETCH:", err);
-    document.getElementById("results").innerHTML =
-      "Error cargando datos (API falló)";
+  .then(r => r.json())
+  .then(d => {
+    DATA = d;
+    render("");
   });
 
-// BUSCADOR
+// BUSCADOR CON DELAY (IMPORTANTE PARA QUE NO SE TRABE)
+let timeout;
+
 document.getElementById("search").addEventListener("input", function () {
-  render(this.value.toLowerCase());
+  clearTimeout(timeout);
+
+  const val = this.value.toLowerCase();
+
+  timeout = setTimeout(() => {
+    render(val);
+  }, 200);
 });
 
-// RENDER
+// RENDER LIMITADO (EVITA TRABAS)
 function render(q){
   const res = document.getElementById("results");
   res.innerHTML = "";
 
   if (!DATA || DATA.length === 0) {
-    res.innerHTML = "No hay datos cargados";
+    res.innerHTML = "Cargando...";
     return;
   }
 
-  const filtrados = DATA.filter(p =>
-    (p.nombre || "").toLowerCase().includes(q)
-  );
+  let count = 0;
 
-  if (filtrados.length === 0) {
+  for (let i = 0; i < DATA.length; i++) {
+    const p = DATA[i];
+
+    if (!p.nombre) continue;
+
+    if (p.nombre.toLowerCase().includes(q)) {
+
+      res.innerHTML += `
+        <div class="card">
+          <div class="nombre">${p.nombre}</div>
+          <div class="precio">${p.lista}</div>
+
+          <button class="copy-btn"
+            data-text="${p.nombre} - ${p.lista}"
+            onclick="navigator.clipboard.writeText(this.dataset.text)">
+            Copiar
+          </button>
+        </div>
+      `;
+
+      count++;
+      if (count >= 50) break; // 🔥 evita lag
+    }
+  }
+
+  if (count === 0) {
     res.innerHTML = "No se encontraron resultados";
-    return;
   }
-
-  filtrados.forEach(p => {
-    res.innerHTML += `
-      <div class="card">
-        <div class="nombre">${p.nombre || ""}</div>
-        <div class="precio">${p.lista || ""}</div>
-
-        <button class="copy-btn"
-          data-text="${p.nombre} - ${p.lista}"
-          onclick="navigator.clipboard.writeText(this.dataset.text)">
-          Copiar
-        </button>
-      </div>
-    `;
-  });
 }
+
 </script>
 
 </body>
