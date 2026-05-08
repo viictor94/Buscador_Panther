@@ -3,499 +3,237 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
 <title>Buscador Panther</title>
-<meta name="description" content="Buscador de precios minoristas Panther Distribuciones">
-<meta name="theme-color" content="#2a6b28">
-<meta name="application-name" content="Buscador">
-<meta name="apple-mobile-web-app-title" content="Buscador">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta property="og:title" content="Buscador Panther">
-<meta property="og:description" content="Consultá precios minoristas y promociones">
-<meta property="og:type" content="website">
-<meta property="og:image" content="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Buscador Panther">
-<meta name="twitter:description" content="Consultá precios minoristas y promociones">
-<meta name="twitter:image" content="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png">
-
-<link rel="icon" type="image/png" sizes="192x192" href="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png">
-<link rel="apple-touch-icon" href="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png">
-
-<!-- PWA Manifest como Data URI — permite "Agregar a pantalla de inicio" con logo y nombre "Buscador" -->
-<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22Buscador%20Panther%22%2C%22short_name%22%3A%22Buscador%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%232a6b28%22%2C%22theme_color%22%3A%22%232a6b28%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22https%3A%2F%2Fi.ibb.co%2F8nvntcR3%2FLogos-Clasico-Nueva-Fuente-2.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%7D%2C%7B%22src%22%3A%22https%3A%2F%2Fi.ibb.co%2F8nvntcR3%2FLogos-Clasico-Nueva-Fuente-2.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%7D%5D%7D">
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-
 <style>
-:root {
-  --g:       #2e7d32;
-  --gd:      #1b5e20;
-  --gl:      #4caf50;
-  --surface: #f4f6f4;
-  --card:    #ffffff;
-  --text:    #1a1a1a;
-  --muted:   #777;
-  --border:  #e8ede8;
-  --efect:   #2e7d32;
-  --cuotas:  #1565c0;
-  --promo:   #e65100;
-  --radius:  20px;
-  --shadow:  0 4px 24px rgba(0,0,0,.10);
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:#eef2ee;
+  color:#1a1a1a;
+  min-height:100vh;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-input, textarea, select, button { font-size: 16px !important; font-family: 'Nunito', sans-serif; }
-
-body {
-  font-family: 'Nunito', sans-serif;
-  background: var(--surface);
-  color: var(--text);
-  -webkit-text-size-adjust: 100%;
-  touch-action: manipulation;
-  min-height: 100vh;
+/* ── HEADER ── */
+.header{
+  background:linear-gradient(135deg,#3a8c3f,#2e7d32,#1b5e20);
+  padding:20px 24px;
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+.logo-box{
+  flex-shrink:0;
+  width:100px; height:100px;
+  background:#fff;
+  border-radius:18px;
+  padding:6px;
+  box-shadow:0 4px 16px rgba(0,0,0,.3);
+  overflow:hidden;
+}
+.logo-box img{
+  width:100%;height:100%;
+  object-fit:contain;display:block;
+}
+.header-text{color:#fff}
+.header-text h1{
+  font-size:clamp(17px,4.5vw,24px);
+  font-weight:900;
+  line-height:1.2;
+}
+.header-text p{
+  font-size:clamp(13px,3.2vw,17px);
+  font-weight:600;
+  opacity:.88;
+  margin-top:4px;
 }
 
-/* ───── HEADER ───── */
-.header {
-  background: linear-gradient(160deg, var(--g) 0%, var(--gd) 100%);
-  padding: 20px 20px 0;
-  position: relative;
-  overflow: hidden;
+/* ── SEARCH ── */
+.search-wrap{
+  background:linear-gradient(180deg,#1d6b21,#2e7d32);
+  padding:12px 16px 16px;
+}
+.search-box{
+  display:flex;align-items:center;
+  background:#fff;border-radius:50px;
+  padding:10px 16px;gap:10px;
+  box-shadow:0 3px 16px rgba(0,0,0,.18);
+}
+.search-box input{
+  border:none;outline:none;flex:1;
+  font-size:16px;font-family:inherit;
+  background:transparent;color:#1a1a1a;
+  min-width:0;
+}
+.search-box input::placeholder{color:#bbb}
+.clear-btn{
+  background:none;border:none;cursor:pointer;
+  color:#ccc;font-size:22px;line-height:1;
+  padding:0;display:none;flex-shrink:0;
+}
+.clear-btn.visible{display:block}
+
+/* ── STATUS ── */
+.status-bar{
+  background:#2e7d32;
+  color:#c8e6c9;
+  font-size:12px;font-weight:700;
+  padding:6px 16px;
+  display:flex;align-items:center;gap:7px;
+}
+.sdot{width:8px;height:8px;border-radius:50%;background:#ffca28;flex-shrink:0}
+
+/* ── CONTAINER ── */
+.container{
+  padding:16px;
+  display:flex;flex-direction:column;
+  align-items:center;   /* cards centradas */
+  gap:14px;
 }
 
-.header::before {
-  content: '';
-  position: absolute;
-  top: -40px; right: -40px;
-  width: 180px; height: 180px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.06);
-  pointer-events: none;
+/* ── WELCOME ── */
+.welcome{
+  text-align:center;padding:50px 20px;color:#666;
+  width:100%;
+}
+.welcome .wi{font-size:46px;margin-bottom:12px}
+.welcome h3{font-size:20px;font-weight:800;color:#2e7d32;margin-bottom:6px}
+.welcome p{font-size:14px;color:#888;margin-top:4px}
+
+/* ── CARD ── */
+.card{
+  background:#fff;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 6px 28px rgba(0,0,0,.10);
+  border:1px solid #e0e9e0;
+  width:100%;
+  max-width:520px;      /* no ocupa todo el ancho */
+  position:relative;
 }
 
-.header::after {
-  content: '';
-  position: absolute;
-  bottom: 20px; left: -30px;
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.04);
-  pointer-events: none;
+/* tag código */
+.card-tag{
+  position:absolute;top:14px;right:14px;
+  font-size:11px;font-weight:800;
+  color:#fff;background:#2e7d32;
+  padding:4px 12px;border-radius:20px;
+  letter-spacing:.3px;
+  white-space:nowrap;
 }
 
-.header-inner {
-  max-width: 700px;
-  margin: 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  position: relative;
-  z-index: 1;
+.card-body{padding:18px 18px 14px}
+
+.card-nombre{
+  font-weight:800;font-size:14px;
+  text-align:center;line-height:1.4;
+  margin:6px 0 16px;
+  padding-right:85px; /* espacio para tag */
+  color:#111;
 }
 
-.logo-wrap {
-  background: rgba(255,255,255,.15);
-  border-radius: 16px;
-  padding: 8px;
-  flex-shrink: 0;
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255,255,255,.2);
+/* precio principal */
+.precio-hero{text-align:center;margin-bottom:14px}
+.monto-big{
+  font-size:clamp(28px,8vw,38px);
+  font-weight:900;color:#2e7d32;
+  letter-spacing:.5px;
+}
+.badge-3c{
+  display:inline-flex;align-items:center;gap:5px;
+  background:#e8f5e9;color:#2e7d32;
+  border-radius:20px;padding:4px 13px;
+  font-size:12px;font-weight:800;margin-top:7px;
+}
+.badge-3c::before{content:"✦";font-size:9px}
+.por-cuota{font-size:13px;color:#666;font-weight:600;margin-top:5px}
+
+/* pills en fila */
+.pills-row{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+}
+.pill{
+  border-radius:12px;padding:9px 5px;
+  text-align:center;border:1.5px solid;
+}
+.pill-lbl{
+  font-size:10px;font-weight:700;color:#555;
+  margin-bottom:5px;line-height:1.3;
+}
+.pill-val{
+  font-size:clamp(12px,3.2vw,15px);
+  font-weight:900;display:block;
 }
 
-.logo { width: 120px; height: auto; display: block; }
+/* efectivo – verde sólido */
+.p-efect{background:#f1fbf2;border-color:#2e7d32}
+.p-efect .pill-val{
+  background:#2e7d32;color:#fff;
+  border-radius:8px;padding:3px 6px;
+  display:inline-block;
+}
+/* 6 cuotas – azul */
+.p-6c{background:#f0f7ff;border-color:#1565c0}
+.p-6c .pill-val{color:#1565c0}
+/* 9-12 – naranja */
+.p-12c{background:#fff8f0;border-color:#e65100}
+.p-12c .pill-val{color:#e65100}
 
-.header-text { flex: 1; min-width: 0; }
-
-.header .title {
-  font-size: 32px;
-  font-weight: 900;
-  text-align: center;
-  color: white;
-  line-height: 1.15;
-  letter-spacing: -.3px;
+/* footer código */
+.card-foot{
+  text-align:center;padding:6px 16px 12px;
+  font-size:12px;color:#bbb;font-weight:600;
 }
 
-.header .subtitle {
-  font-size: 23px;
-  text-align: center;
-  color: rgba(255,255,255,.75);
-  margin-top: 3px;
-  font-weight: 600;
+/* sin resultados */
+.empty{
+  text-align:center;padding:40px 20px;
+  color:#999;font-size:14px;width:100%;
 }
+.empty span{font-size:36px;display:block;margin-bottom:10px}
 
-/* ───── SEARCH ───── */
-.search-wrap {
-  background: linear-gradient(160deg, var(--g) 0%, var(--gd) 100%);
-  padding: 16px 20px 24px;
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  background: white;
-  border-radius: 50px;
-  padding: 0 18px;
-  gap: 10px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.22), 0 2px 8px rgba(0,0,0,.10);
-  width: 100%;
-  transition: box-shadow .2s;
-}
-
-.search-box:focus-within {
-  box-shadow: 0 8px 32px rgba(0,0,0,.28), 0 0 0 3px rgba(76,175,80,.35);
-}
-
-.search-icon { font-size: 20px; color: var(--g); flex-shrink: 0; }
-
-.search-box input {
-  border: none;
-  outline: none;
-  font-size: 16px !important;
-  padding: 17px 0;
-  flex: 1;
-  background: transparent;
-  color: #222;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 600;
-}
-
-.search-box input::placeholder { color: #bbb; font-weight: 400; }
-
-.clear-btn {
-  background: #eee;
-  border: none;
-  cursor: pointer;
-  color: #888;
-  font-size: 14px;
-  width: 28px; height: 28px;
-  border-radius: 50%;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  font-weight: 900;
-  transition: background .15s, color .15s;
-  flex-shrink: 0;
-}
-
-.clear-btn:hover { background: #ddd; color: #444; }
-
-/* ───── STATUS ───── */
-.status-bar {
-  background: var(--gd);
-  padding: 8px 20px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 34px;
-}
-
-.spinner {
-  width: 12px; height: 12px;
-  border: 2.5px solid rgba(255,255,255,.2);
-  border-top-color: #ff6b6b;
-  border-radius: 50%;
-  animation: spin .7s linear infinite;
-  flex-shrink: 0;
-}
-
-.spinner.done { border-top-color: #69f0ae; animation: none; border-color: rgba(255,255,255,.15); }
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-#status-text { font-size: 12px; font-weight: 700; font-family: 'Nunito', sans-serif; transition: color .4s; }
-#status-text.loading { color: #ff6b6b; }
-#status-text.ready   { color: #69f0ae; }
-#status-text.info    { color: rgba(255,255,255,.75); font-weight: 600; }
-
-/* ───── CONTAINER ───── */
-.container {
-  padding: 16px 4% 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  max-width: 700px;
-  margin: 0 auto;
-}
-
-/* ───── CARD ───── */
-.card {
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 20px 18px 16px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: var(--shadow);
-  animation: fadeUp .2s ease both;
-  border: 1px solid var(--border);
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* Stagger */
-.card:nth-child(1)  { animation-delay: .00s; }
-.card:nth-child(2)  { animation-delay: .04s; }
-.card:nth-child(3)  { animation-delay: .08s; }
-.card:nth-child(4)  { animation-delay: .12s; }
-.card:nth-child(5)  { animation-delay: .16s; }
-.card:nth-child(n+6){ animation-delay: .20s; }
-
-/* Acento lateral izquierdo */
-.card::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 4px;
-  background: linear-gradient(180deg, var(--gl), var(--g));
-  border-radius: 4px 0 0 4px;
-}
-
-.card-tag {
-  position: absolute;
-  top: 0; right: 0;
-  background: linear-gradient(135deg, var(--gl), var(--g));
-  color: white;
-  font-size: 10px;
-  padding: 4px 14px;
-  font-weight: 800;
-  border-radius: 0 var(--radius) 0 14px;
-  letter-spacing: .3px;
-}
-
-.card-nombre {
-  font-size: 15px;
-  font-weight: 800;
-  color: var(--text);
-  line-height: 1.4;
-  margin: 10px 0 16px;
-  padding: 0 8px 0 10px;
-  text-align: center;
-}
-
-/* ───── PRECIO HERO ───── */
-.precio-hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 16px;
-  padding-bottom: 16px;
-  border-bottom: 2px dashed var(--border);
-}
-
-.precio-hero .monto {
-  font-size: 36px;
-  font-weight: 900;
-  color: var(--g);
-  line-height: 1;
-  letter-spacing: -1px;
-}
-
-.cuotas-badge {
-  font-size: 11px;
-  color: var(--g);
-  background: #e8f5e9;
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-weight: 800;
-  letter-spacing: .2px;
-  border: 1px solid #c8e6c9;
-}
-
-.cuotas-detalle {
-  font-size: 14px;
-  font-weight: 800;
-  color: #333;
-}
-
-/* ───── PILLS ───── */
-.pills {
-  display: flex;
-  gap: 10px;
-  width: 100%;
-  justify-content: center;
-}
-
-.pill {
-  background: #fafafa;
-  border-radius: 16px;
-  padding: 12px 8px 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  flex: 1;
-  border: 1px solid var(--border);
-  transition: transform .15s, box-shadow .15s;
-}
-
-.pill:active { transform: scale(.97); }
-
-.pill .plabel {
-  font-size: 11px;
-  color: var(--muted);
-  font-weight: 700;
-  text-align: center;
-  line-height: 1.3;
-  letter-spacing: .1px;
-}
-
-/* Efectivo */
-.pill-efect { border-top: 3px solid var(--efect); }
-.pill .pval-efect {
-  font-size: 15px;
-  font-weight: 900;
-  color: white;
-  background: var(--efect);
-  padding: 5px 14px;
-  border-radius: 20px;
-}
-
-/* Cuotas 6 */
-.pill-cuotas { border-top: 3px solid var(--cuotas); }
-.pill .pval-cuotas {
-  font-size: 15px;
-  font-weight: 900;
-  color: var(--cuotas);
-  background: #e3f2fd;
-  padding: 5px 14px;
-  border-radius: 20px;
-}
-
-/* Promo */
-.pill-promo { border-top: 3px solid var(--promo); }
-.pill .pval-promo {
-  font-size: 15px;
-  font-weight: 900;
-  color: var(--promo);
-  background: #fff3e0;
-  padding: 5px 14px;
-  border-radius: 20px;
-}
-
-.card-cod {
-  font-size: 11px;
-  color: #ccc;
-  margin-top: 10px;
-  text-align: center;
-  font-weight: 600;
-}
-
-/* ───── EMPTY ───── */
-.empty {
-  text-align: center;
-  color: var(--muted);
-  font-size: 16px;
-  margin-top: 52px;
-  font-weight: 600;
-}
-
-.empty-icon { font-size: 44px; margin-bottom: 10px; }
-
-/* ───── WELCOME ───── */
-.welcome-card {
-  background: white;
-  border-radius: 24px;
-  padding: 44px 28px;
-  text-align: center;
-  box-shadow: var(--shadow);
-  margin-top: 10px;
-  border: 1px solid var(--border);
-  animation: fadeUp .3s ease both;
-}
-
-.welcome-icon { font-size: 56px; margin-bottom: 18px; display: block; }
-
-.welcome-card h2 {
-  font-size: 28px;
-  color: var(--g);
-  margin-bottom: 12px;
-  font-weight: 900;
-  letter-spacing: -.3px;
-}
-
-.welcome-card p {
-  font-size: 15px;
-  color: #666;
-  line-height: 1.6;
-  font-weight: 600;
-}
-
-.welcome-box {
-  margin-top: 28px;
-  background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-  color: var(--g);
-  padding: 18px;
-  border-radius: 16px;
-  font-weight: 800;
-  font-size: 16px;
-  border: 1.5px dashed #a5d6a7;
-}
-
-/* ───── RESPONSIVE ───── */
-@media (max-width: 480px) {
-  .header .title { font-size: 19px; }
-  .logo { width: 64px; }
-  .logo-wrap { padding: 6px; border-radius: 12px; }
-
-  .card-nombre { font-size: 14px; }
-  .precio-hero .monto { font-size: 32px; }
-
-  .pill .plabel { font-size: 10px; }
-  .pill .pval-efect,
-  .pill .pval-cuotas,
-  .pill .pval-promo { font-size: 13px; padding: 5px 10px; }
-
-  .pills { gap: 7px; }
-}
-
-@media (max-width: 360px) {
-  .pills { flex-direction: column; }
-  .pill { flex-direction: row; justify-content: space-between; padding: 10px 14px; }
-  .pill-efect, .pill-cuotas, .pill-promo { border-top: none; border-left: 3px solid; }
-  .pill-efect  { border-color: var(--efect); }
-  .pill-cuotas { border-color: var(--cuotas); }
-  .pill-promo  { border-color: var(--promo); }
+@media(max-width:360px){
+  .pills-row{gap:5px}
+  .pill{padding:7px 3px}
 }
 </style>
 </head>
-
 <body>
 
 <div class="header">
-  <div class="header-inner">
-    <div class="logo-wrap">
-      <img src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png" class="logo" alt="Panther">
-    </div>
-    <div class="header-text">
-      <div class="title">Buscador Precios Minorista</div>
-      <div class="subtitle">Panther Distribuciones</div>
-    </div>
+  <div class="logo-box">
+    <img src="https://i.ibb.co/8nvntcR3/Logos-Clasico-Nueva-Fuente-2.png" alt="Panther">
+  </div>
+  <div class="header-text">
+    <h1>Buscador Precios Minorista</h1>
+    <p>Panther Distribuciones</p>
   </div>
 </div>
 
 <div class="search-wrap">
   <div class="search-box">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="search" placeholder="Buscar producto..." autocomplete="off" autocorrect="off" spellcheck="false">
-    <button class="clear-btn" id="clearBtn" onclick="clearSearch()" aria-label="Limpiar búsqueda">✕</button>
+    <svg width="20" height="20" fill="none" stroke="#aaa" stroke-width="2.2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+    <input id="search" placeholder="Buscar producto..." autocomplete="off" autocorrect="off" spellcheck="false" inputmode="search">
+    <button class="clear-btn" id="clearBtn" onclick="clearSearch()">×</button>
   </div>
 </div>
 
-<div class="status-bar">
-  <div class="spinner" id="spinner"></div>
-  <span id="status-text" class="loading">Cargando lista de precios...</span>
+<div class="status-bar" id="status">
+  <div class="sdot" id="dot"></div>
+  <span id="stxt">Cargando...</span>
 </div>
 
-<div class="container" id="results"></div>
+<div class="container" id="results">
+  <div class="welcome">
+    <div class="wi">🛍️</div>
+    <h3>Bienvenido</h3>
+    <p>Buscá productos y precios en segundos</p>
+    <p>🔍 Escribí para comenzar</p>
+  </div>
+</div>
 
 <script>
 let DATA = [];
@@ -570,6 +308,5 @@ function render(data,q){
     </div>`).join("");
 }
 </script>
-
 </body>
 </html>
