@@ -38,38 +38,47 @@ font-weight:700;cursor:pointer
 <script>
 
 // 🔴 PEGÁ TU /exec AQUÍ
-const API = "https://script.google.com/macros/s/AKfycbwJIlZqeDGl9NVK3F3zRwMsjhUxjP_eDzTEo4MtK8-T8P8knCMEU85UORjkx8mphSbf/exec";
 
+console.log("SCRIPT INICIADO");
+const API = "https://script.google.com/macros/s/AKfycbwJIlZqeDGl9NVK3F3zRwMsjhUxjP_eDzTEo4MtK8-T8P8knCMEU85UORjkx8mphSbf/exec";
 let DATA = [];
 
-// CARGA DE DATOS
+console.log("ANTES DE FETCH");
+
 fetch(API)
-  .then(r => r.json())
+  .then(r => {
+    console.log("RESPUESTA STATUS:", r.status);
+    return r.json();
+  })
   .then(d => {
+    console.log("DATA RECIBIDA:", d);
+
     DATA = d;
+
+    document.getElementById("results").innerHTML =
+      "DATA CARGADA: " + DATA.length + " registros";
+
     render("");
+  })
+  .catch(err => {
+    console.error("ERROR FETCH:", err);
+    document.getElementById("results").innerHTML =
+      "ERROR CARGANDO API";
   });
 
-// BUSCADOR CON DELAY (IMPORTANTE PARA QUE NO SE TRABE)
-let timeout;
+console.log("FETCH INICIADO");
 
 document.getElementById("search").addEventListener("input", function () {
-  clearTimeout(timeout);
-
-  const val = this.value.toLowerCase();
-
-  timeout = setTimeout(() => {
-    render(val);
-  }, 200);
+  console.log("BUSQUEDA:", this.value);
+  render(this.value.toLowerCase());
 });
 
-// RENDER LIMITADO (EVITA TRABAS)
 function render(q){
   const res = document.getElementById("results");
   res.innerHTML = "";
 
   if (!DATA || DATA.length === 0) {
-    res.innerHTML = "Cargando...";
+    res.innerHTML = "SIN DATOS";
     return;
   }
 
@@ -86,22 +95,16 @@ function render(q){
         <div class="card">
           <div class="nombre">${p.nombre}</div>
           <div class="precio">${p.lista}</div>
-
-          <button class="copy-btn"
-            data-text="${p.nombre} - ${p.lista}"
-            onclick="navigator.clipboard.writeText(this.dataset.text)">
-            Copiar
-          </button>
         </div>
       `;
 
       count++;
-      if (count >= 50) break; // 🔥 evita lag
+      if (count >= 30) break;
     }
   }
 
   if (count === 0) {
-    res.innerHTML = "No se encontraron resultados";
+    res.innerHTML = "SIN RESULTADOS";
   }
 }
 
