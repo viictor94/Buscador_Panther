@@ -167,29 +167,52 @@ function setSpinner(done) {
 }
 
 // ── Carga inicial ──
-window.onload = () => {
+document.addEventListener("DOMContentLoaded", () => {
   showWelcome();
-fetch(API)
-  .then(async (r) => {
-    const text = await r.text();   // 👈 clave
+  // ── Cargar cache local instantáneamente ──
+  const cache = localStorage.getItem("productos_cache");
+  if (cache) {
     try {
-      return JSON.parse(text);
-    } catch (e) {
-      console.log("RESPUESTA CRUDA:", text);
-      throw new Error("JSON inválido desde API");
+      DATA = JSON.parse(cache);
+      setSpinner(true);
+      setStatus("✓ Lista cargada — " + DATA.length + " productos", "ready");
+    } catch(e) {
+      console.log("Error cache local", e);
     }
-  })
-  .then(d => {
-    DATA = d;
-    setSpinner(true);
-    setStatus("✓ Lista cargada — " + d.length + " productos", "ready");
-  })
-  .catch((err) => {
-    console.log(err);
-    setSpinner(true);
-    setStatus("⚠ Error al cargar datos", "loading");
-  });
-};
+  }
+  // ── Actualizar desde API en background ──
+  fetch(API)
+    .then(async (r) => {
+      const text = await r.text();
+      try {
+        return JSON.parse(text);
+      } catch (e) {
+        console.log("RESPUESTA CRUDA:", text);
+        throw new Error("JSON inválido desde API");
+      }    })
+    .then(d => {
+      DATA = d;
+      // guardar cache
+      localStorage.setItem(
+        "productos_cache",
+        JSON.stringify(d)
+      );
+
+      setSpinner(true);
+      setStatus(
+        "✓ Lista cargada — " + d.length + " productos",
+        "ready"
+      );
+    })
+    .catch((err) => {
+      console.log(err);
+      // solo mostrar error si NO hay cache
+      if (!cache) {
+        setSpinner(true);
+        setStatus("⚠ Error al cargar datos", "loading");
+      }
+    });
+});
 
 // ── Welcome ──
 function showWelcome() {
