@@ -1,6 +1,6 @@
 {
-  "name": "Buscador Panther",
-  "short_name": "Buscador",
+  "name": "Precios Panther",
+  "short_name": "Precios Minoristas",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
