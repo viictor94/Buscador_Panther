@@ -271,14 +271,16 @@ maximumFractionDigits:2
 }
 
 function cuota(v,n){
-const x=parseFloat(
-String(v)
-.replace(/\./g,"")
-.replace(",",".")
-.replace(/[^0-9.]/g,"")
-);
 
-return isNaN(x)?"":"de $"+Math.round(x/n).toLocaleString("es-AR")+" c/u";
+const x=parseFloat(v);
+
+if(isNaN(x)) return "";
+
+return "de $"+(x/n).toLocaleString("es-AR",{
+minimumFractionDigits:0,
+maximumFractionDigits:2
+})+" c/u";
+
 }
 
 // ── Render ──
