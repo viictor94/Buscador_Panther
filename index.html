@@ -256,18 +256,18 @@ document.getElementById("search").addEventListener("input", e => {
 
 // ── Calcular cuota Formatear Precio──
 function precio(v){
+
 if(v===undefined||v===null||v==="") return "—";
 
-const x=parseFloat(
+const x=Number(
 String(v)
-.replace(/\./g,"")
-.replace(",",".")
-.replace(/[^0-9.]/g,"")
+.replace(/[^0-9]/g,"")
 );
 
 if(isNaN(x)) return v;
 
-return "$"+Math.round(x).toLocaleString("es-AR");
+return "$"+x.toLocaleString("es-AR");
+
 }
 
 function cuota(v,n){
