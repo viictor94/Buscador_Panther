@@ -253,10 +253,31 @@ document.getElementById("search").addEventListener("input", e => {
   render(res, q);
 });
 
-// ── Calcular cuota ──
-function cuota(v, n) {
-  const x = parseFloat(String(v).replace(/[^0-9.,]/g, "").replace(",", "."));
-  return isNaN(x) ? "" : "de $" + Math.round(x / n).toLocaleString("es-AR") + " c/u";
+// ── Calcular cuota Formatear Precio──
+function precio(v){
+if(v===undefined||v===null||v==="") return "—";
+
+const x=parseFloat(
+String(v)
+.replace(/\./g,"")
+.replace(",",".")
+.replace(/[^0-9.]/g,"")
+);
+
+if(isNaN(x)) return v;
+
+return "$"+Math.round(x).toLocaleString("es-AR");
+}
+
+function cuota(v,n){
+const x=parseFloat(
+String(v)
+.replace(/\./g,"")
+.replace(",",".")
+.replace(/[^0-9.]/g,"")
+);
+
+return isNaN(x)?"":"de $"+Math.round(x/n).toLocaleString("es-AR")+" c/u";
 }
 
 // ── Render ──
@@ -274,16 +295,17 @@ function render(data, q) {
   setStatus(data.length === 1 ? "1 resultado" : data.length + " resultados", "info");
 
   document.getElementById("results").innerHTML = data.map(p => {
-    const c3 = cuota(p["PRECIO TARJETA 3 CUOTAS"], 3);
-    const ef  = p["PRECIO EFECTIVO / TRANSFER"] || "—";
-    const c6  = p["PRECIO TARJETA 6 CUOTAS"]    || "—";
-    const pr  = p["Promo 9 o 12 cuotas"]        || "—";
-    return `
+const c3=cuota(p["PRECIO TARJETA 3 CUOTAS"],3);
+const ef=precio(p["PRECIO EFECTIVO / TRANSFER"]);
+const c6=precio(p["PRECIO TARJETA 6 CUOTAS"]);
+const pr=precio(p["Promo 9 o 12 cuotas"]);
+const hero=precio(p["PRECIO TARJETA 3 CUOTAS"]);
+return `
     <div class="card">
       ${p.CODIGO ? `<div class="card-tag">Cód: ${p.CODIGO}</div>` : ""}
       <div class="card-nombre">${p.DETALLE || ""}</div>
       <div class="precio-hero">
-        <div class="monto">${p["PRECIO TARJETA 3 CUOTAS"] || ""}</div>
+        <div class="monto">${hero}</div>
         <span class="cuotas-badge">✦ 3 cuotas sin interés</span>
         ${c3 ? `<span class="cuotas-detalle">${c3}</span>` : ""}
       </div>
