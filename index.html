@@ -259,14 +259,14 @@ function precio(v){
 
 if(v===undefined||v===null||v==="") return "—";
 
-const x=Number(
-String(v)
-.replace(/[^0-9]/g,"")
-);
+const x=parseFloat(v);
 
 if(isNaN(x)) return v;
 
-return "$"+x.toLocaleString("es-AR");
+return "$"+x.toLocaleString("es-AR",{
+minimumFractionDigits:0,
+maximumFractionDigits:2
+});
 
 }
 
