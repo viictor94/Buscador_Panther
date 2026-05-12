@@ -172,6 +172,7 @@ function setSpinner(done) {
 
 // ── Carga inicial ──
 document.addEventListener("DOMContentLoaded", () => {
+document.getElementById("search").focus();
   showWelcome();
   // ── Cargar cache local instantáneamente ──
   const cache = localStorage.getItem("productos_cache");
