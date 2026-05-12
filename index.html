@@ -114,12 +114,15 @@ body{font-family:'Nunito',sans-serif;background:var(--surface);color:var(--text)
 }
 
 
-@media(max-width:360px){
-  .pills{flex-direction:column}
+@media(max-width:360px){.pills{flex-direction:column}
   .pill{flex-direction:row;justify-content:space-between;padding:10px 14px}
   .pill-efect,.pill-cuotas,.pill-promo{border-top:none;border-left:3px solid}
-  .pill-efect{border-color:var(--efect)}.pill-cuotas{border-color:var(--cuotas)}.pill-promo{border-color:var(--promo)}
-}
+  .pill-efect{border-color:var(--efect)}.pill-cuotas{border-color:var(--cuotas)}.pill-promo{border-color:var(--promo)}}
+
+#toTop{position:fixed;bottom:22px;right:22px;width:52px;height:52px;border:none;border-radius:50%;background:#3e863c;color:white;font-size:26px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.20);z-index:9999;opacity:0;pointer-events:none;transition:all .25s ease;}
+#toTop.show{opacity:1;pointer-events:auto;}
+#toTop:active{transform:scale(.94);}
+  
 </style>
 </head>
 <body>
@@ -301,6 +304,27 @@ function render(data, q) {
     </div>`;
   }).join("");
 }
+  const toTopBtn = document.getElementById("toTop");
+
+window.addEventListener("scroll", () => {
+
+  if(window.scrollY > 300){
+    toTopBtn.classList.add("show");
+  } else {
+    toTopBtn.classList.remove("show");
+  }
+
+});
+
+toTopBtn.addEventListener("click", () => {
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+});
 </script>
+<button id="toTop">↑</button>
 </body>
 </html>
