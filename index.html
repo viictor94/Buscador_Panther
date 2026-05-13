@@ -122,6 +122,9 @@ body{font-family:'Nunito',sans-serif;background:var(--surface);color:var(--text)
 #toTop{position:fixed;bottom:22px;right:22px;width:52px;height:52px;border:none;border-radius:50%;background:#3e863c;color:white;font-size:26px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(0,0,0,.20);z-index:9999;opacity:0;pointer-events:none;transition:all .25s ease;}
 #toTop.show{opacity:1;pointer-events:auto;}
 #toTop:active{transform:scale(.94);}
+
+.load-more{width:100%;border:none;background:#3e863c;color:white;padding:16px;border-radius:18px;font-size:16px;font-weight:800;cursor:pointer;margin-top:10px;box-shadow:0 4px 18px rgba(0,0,0,.12);transition:.2s;}
+.load-more:active{transform:scale(.98);}
   
 </style>
 </head>
@@ -156,112 +159,225 @@ body{font-family:'Nunito',sans-serif;background:var(--surface);color:var(--text)
 <button id="toTop">↑</button>
 
 <script>
-let DATA = [];
-const API = "https://script.google.com/macros/s/AKfycbwT3k-j686myvD9lIZh1AC0JlgCYoFdLkIUSufvssgceVVyeZufJXqiQFzf-KCPCZz5/exec";
+let DATA=[];
+let CURRENT_RESULTS=[];
+let CURRENT_QUERY="";
+let VISIBLE=10;
+let searchTimer;
 
-// ── Helpers de status ──
-function setStatus(msg, cls) {
-  const el = document.getElementById("status-text");
-  el.textContent = msg;
-  el.className = cls;
-}
-function setSpinner(done) {
-  const s = document.getElementById("spinner");
-  if (done) s.classList.add("done"); else s.classList.remove("done");
+const API="https://script.google.com/macros/s/AKfycbwT3k-j686myvD9lIZh1AC0JlgCYoFdLkIUSufvssgceVVyeZufJXqiQFzf-KCPCZz5/exec";
+// ── Helpers ──
+function setStatus(msg,cls){
+const el=document.getElementById("status-text");
+el.textContent=msg;
+el.className=cls;
 }
 
-// ── Carga inicial ──
-document.addEventListener("DOMContentLoaded", () => {
+function setSpinner(done){
+const s=document.getElementById("spinner");
+if(done)s.classList.add("done");
+else s.classList.remove("done");
+}
+
+// ── Inicio ──
+
+document.addEventListener("DOMContentLoaded",()=>{
+
 document.getElementById("search").focus();
-  showWelcome();
-  // ── Cargar cache local instantáneamente ──
-  const cache = localStorage.getItem("productos_cache");
-  if (cache) {
-    try {
-      DATA = JSON.parse(cache);
-      setSpinner(true);
-      setStatus("✓ Lista cargada — " + DATA.length + " productos", "ready");
-    } catch(e) {
-      console.log("Error cache local", e);
-    }
-  }
-  // ── Actualizar desde API en background ──
-  fetch(API)
-    .then(async (r) => {
-      const text = await r.text();
-      try {
-        return JSON.parse(text);
-      } catch (e) {
-        console.log("RESPUESTA CRUDA:", text);
-        throw new Error("JSON inválido desde API");
-      }    })
-    .then(d => {
-      DATA = d;
-      // guardar cache
-      localStorage.setItem(
-        "productos_cache",
-        JSON.stringify(d)
-      );
 
-      setSpinner(true);
-      setStatus(
-        "✓ Lista cargada — " + d.length + " productos",
-        "ready"
-      );
-    })
-    .catch((err) => {
-      console.log(err);
-      // solo mostrar error si NO hay cache
-      if (!cache) {
-        setSpinner(true);
-        setStatus("⚠ Error al cargar datos", "loading");
-      }
-    });
+showWelcome();
+
+const cache=localStorage.getItem("productos_cache");
+
+if(cache){
+
+try{
+
+DATA=JSON.parse(cache);
+
+setSpinner(true);
+
+setStatus(
+"✓ Lista cargada — "+DATA.length+" productos",
+"ready"
+);
+
+}catch(e){
+
+console.log("Error cache",e);
+
+}
+
+}
+
+fetch(API)
+
+.then(async(r)=>{
+
+const text=await r.text();
+
+try{
+
+return JSON.parse(text);
+
+}catch(e){
+
+console.log("RESPUESTA:",text);
+
+throw new Error("JSON inválido");
+
+}
+
+})
+
+.then(d=>{
+
+DATA=d;
+
+localStorage.setItem(
+"productos_cache",
+JSON.stringify(d)
+);
+
+setSpinner(true);
+
+setStatus(
+"✓ Lista cargada — "+d.length+" productos",
+"ready"
+);
+
+})
+
+.catch(err=>{
+
+console.log(err);
+
+if(!cache){
+
+setSpinner(true);
+
+setStatus(
+"⚠ Error al cargar datos",
+"loading"
+);
+
+}
+
+});
+
 });
 
 // ── Welcome ──
-function showWelcome() {
-  document.getElementById("results").innerHTML = `
-    <div class="welcome-card">
-      <span class="welcome-icon">🛍️</span>
-      <h2>Bienvenido</h2>
-      <p>Consultá precios minoristas<br>y promociones al instante</p>
-      <div class="welcome-box">🔍 Escribí para comenzar</div>
-    </div>`;
+
+function showWelcome(){
+
+document.getElementById("results").innerHTML=`
+<div class="welcome-card">
+<span class="welcome-icon">🛍️</span>
+<h2>Bienvenido</h2>
+<p>Consultá precios minoristas<br>y promociones al instante</p>
+<div class="welcome-box">🔍 Escribí para comenzar</div>
+</div>`;
+
 }
 
 // ── Limpiar ──
-function clearSearch() {
-  document.getElementById("search").value = "";
-  document.getElementById("clearBtn").classList.remove("visible");
-  showWelcome();
-  // restaurar contador al estado de lista cargada
-  if (DATA.length) setStatus("✓ Lista cargada — " + DATA.length + " productos", "ready");
-  document.getElementById("search").focus();
+
+function clearSearch(){
+
+document.getElementById("search").value="";
+
+document
+.getElementById("clearBtn")
+.classList.remove("visible");
+
+showWelcome();
+
+if(DATA.length){
+
+setStatus(
+"✓ Lista cargada — "+DATA.length+" productos",
+"ready"
+);
+
 }
 
-document.getElementById("clearBtn").addEventListener("click", clearSearch);
+document.getElementById("search").focus();
 
-// ── Input ──
-document.getElementById("search").addEventListener("input", e => {
-  const q = e.target.value.toLowerCase().trim();
-  document.getElementById("clearBtn").classList.toggle("visible", q.length > 0);
-  if (!q) { clearSearch(); return; }
-  const res = DATA.filter(p =>
-    (p.CODIGO  && p.CODIGO.toLowerCase().includes(q)) ||
-    (p.DETALLE && p.DETALLE.toLowerCase().includes(q))
-  );
-  render(res, q);
+}
+
+document
+.getElementById("clearBtn")
+.addEventListener("click",clearSearch);
+
+// ── Busqueda optimizada ──
+
+document
+.getElementById("search")
+.addEventListener("input",e=>{
+
+clearTimeout(searchTimer);
+
+searchTimer=setTimeout(()=>{
+
+const q=e.target.value
+.toLowerCase()
+.trim();
+
+document
+.getElementById("clearBtn")
+.classList.toggle("visible",q.length>0);
+
+if(!q){
+
+clearSearch();
+return;
+
+}
+
+CURRENT_QUERY=q;
+
+const res=DATA.filter(p=>{
+
+const codigo=String(
+p.CODIGO||""
+).toLowerCase();
+
+const detalle=String(
+p.DETALLE||""
+).toLowerCase();
+
+return(
+codigo.includes(q)||
+detalle.includes(q)
+);
+
 });
 
-// ── Calcular cuota Formatear Precio──
+CURRENT_RESULTS=res;
+
+VISIBLE=10;
+
+render(
+CURRENT_RESULTS.slice(0,VISIBLE),
+CURRENT_QUERY
+);
+
+},180);
+
+});
+
+// ── Precio ──
+
 function precio(v){
 
-if(v===undefined||v===null||v==="") return "—";
+if(v===undefined||v===null||v==="")
+return "—";
 
-const x=parseFloat(v);
+const x=Number(v);
 
-if(isNaN(x)) return v;
+if(isNaN(x))
+return v;
 
 return "$"+x.toLocaleString("es-AR",{
 minimumFractionDigits:0,
@@ -270,11 +386,14 @@ maximumFractionDigits:2
 
 }
 
+// ── Cuotas ──
+
 function cuota(v,n){
 
-const x=parseFloat(v);
+const x=Number(v);
 
-if(isNaN(x)) return "";
+if(isNaN(x))
+return "";
 
 return "de $"+(x/n).toLocaleString("es-AR",{
 minimumFractionDigits:0,
@@ -284,72 +403,164 @@ maximumFractionDigits:2
 }
 
 // ── Render ──
-function render(data, q) {
-  if (!data.length) {
-    setStatus("Sin resultados", "info");
-    document.getElementById("results").innerHTML = `
-      <div class="empty">
-        <div class="empty-icon">🔍</div>
-        Sin resultados para "<strong>${q}</strong>"
-      </div>`;
-    return;
-  }
 
-  setStatus(data.length === 1 ? "1 resultado" : data.length + " resultados", "info");
+function render(data,q){
 
-  document.getElementById("results").innerHTML = data.map(p => {
-const c3=cuota(p["PRECIO TARJETA 3 CUOTAS"],3);
-const ef=precio(p["PRECIO EFECTIVO / TRANSFER"]);
-const c6=precio(p["PRECIO TARJETA 6 CUOTAS"]);
-const pr=precio(p["Promo 9 o 12 cuotas"]);
-const hero=precio(p["PRECIO TARJETA 3 CUOTAS"]);
-return `
-    <div class="card">
-      ${p.CODIGO ? `<div class="card-tag">Cód: ${p.CODIGO}</div>` : ""}
-      <div class="card-nombre">${p.DETALLE || ""}</div>
-      <div class="precio-hero">
-        <div class="monto">${hero}</div>
-        <span class="cuotas-badge">✦ 3 cuotas sin interés</span>
-        ${c3 ? `<span class="cuotas-detalle">${c3}</span>` : ""}
-      </div>
-      <div class="pills">
-        <div class="pill pill-efect">
-          <span class="plabel">🖥 Efectivo / Transf. 🔥</span>
-          <span class="pval-efect">${ef}</span>
-        </div>
-        <div class="pill pill-cuotas">
-          <span class="plabel">💳 6 cuotas</span>
-          <span class="pval-cuotas">${c6}</span>
-        </div>
-        <div class="pill pill-promo">
-          <span class="plabel">💳 9 o 12 cuotas</span>
-          <span class="pval-promo">${pr}</span>
-        </div>
-      </div>
-      ${p.CODIGO ? `<div class="card-cod">Código: ${p.CODIGO}</div>` : ""}
-    </div>`;
-  }).join("");
+if(!data.length){
+
+setStatus("Sin resultados","info");
+
+document.getElementById("results").innerHTML=`
+<div class="empty">
+<div class="empty-icon">🔍</div>
+Sin resultados para "<strong>${q}</strong>"
+</div>`;
+
+return;
+
 }
-  const toTopBtn = document.getElementById("toTop");
 
-window.addEventListener("scroll", () => {
+setStatus(
+CURRENT_RESULTS.length===1
+?"1 resultado"
+:CURRENT_RESULTS.length+" resultados",
+"info"
+);
 
-  if(window.scrollY > 300){
-    toTopBtn.classList.add("show");
-  } else {
-    toTopBtn.classList.remove("show");
-  }
+let html=data.map(p=>{
+
+const c3=cuota(
+p["PRECIO TARJETA 3 CUOTAS"],
+3
+);
+
+const ef=precio(
+p["PRECIO EFECTIVO / TRANSFER"]
+);
+
+const c6=precio(
+p["PRECIO TARJETA 6 CUOTAS"]
+);
+
+const pr=precio(
+p["Promo 9 o 12 cuotas"]
+);
+
+const hero=precio(
+p["PRECIO TARJETA 3 CUOTAS"]
+);
+
+return `
+<div class="card">
+
+${p.CODIGO
+?`<div class="card-tag">Cód: ${p.CODIGO}</div>`
+:""}
+
+<div class="card-nombre">
+${p.DETALLE||""}
+</div>
+
+<div class="precio-hero">
+
+<div class="monto">
+${hero}
+</div>
+
+<span class="cuotas-badge">
+✦ 3 cuotas sin interés
+</span>
+
+${c3
+?`<span class="cuotas-detalle">${c3}</span>`
+:""}
+
+</div>
+
+<div class="pills">
+
+<div class="pill pill-efect">
+
+<span class="plabel">
+🖥 Efectivo / Transf. 🔥
+</span>
+
+<span class="pval-efect">
+${ef}
+</span>
+
+</div>
+
+<div class="pill pill-cuotas">
+
+<span class="plabel">
+💳 6 cuotas
+</span>
+
+<span class="pval-cuotas">
+${c6}
+</span>
+
+</div>
+
+<div class="pill pill-promo">
+
+<span class="plabel">
+💳 9 o 12 cuotas
+</span>
+
+<span class="pval-promo">
+${pr}
+</span>
+
+</div>
+
+</div>
+
+${p.CODIGO
+?`<div class="card-cod">Código: ${p.CODIGO}</div>`
+:""}
+
+</div>`;
+
+}).join("");
+
+if(CURRENT_RESULTS.length>VISIBLE){
+
+html+=`
+<button id="loadMoreBtn" class="load-more">
+Cargar más productos
+</button>`;
+
+}
+
+document.getElementById("results").innerHTML=html;const btn=document.getElementById("loadMoreBtn");
+  if(btn){
+btn.addEventListener("click",()=>{
+VISIBLE+=10;
+render(CURRENT_RESULTS.slice(0,VISIBLE),CURRENT_QUERY);
+});
+
+}
+
+}
+
+// ── Scroll top ──
+const toTopBtn=document.getElementById("toTop");
+window.addEventListener("scroll",()=>{
+if(window.scrollY>300){
+toTopBtn.classList.add("show");
+}else{
+toTopBtn.classList.remove("show");}
 
 });
 
-toTopBtn.addEventListener("click", () => {
+toTopBtn.addEventListener("click",()=>{
 
-  window.scrollTo({
-    top:0,
-    behavior:"smooth"
-  });
+window.scrollTo({top:0,behavior:"smooth"});
 
 });
+
 </script>
 </body>
 </html>
