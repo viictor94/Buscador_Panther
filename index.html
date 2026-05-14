@@ -125,8 +125,13 @@ body{font-family:'Nunito',sans-serif;background:var(--surface);color:var(--text)
 
 .load-more{width:100%;border:none;background:#3e863c;color:white;padding:16px;border-radius:18px;font-size:16px;font-weight:800;cursor:pointer;margin-top:10px;box-shadow:0 4px 18px rgba(0,0,0,.12);transition:.2s;}
 .load-more:active{transform:scale(.98);}
+.card-title-row{display:flex;align-items:flex-start;gap:8px;margin:10px 0 16px;padding:0 8px 0 10px;}
   
+.copy-btn{border:none;background:#eef5ee;color:#3e863c;width:28px;height:28px;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;flex-shrink:0;transition:.15s;}
+.copy-btn:active{transform:scale(.92);background:#dcefdc;}
+.card-title-row .card-nombre{margin:0;padding:0;flex:1;text-align:center;}  
 </style>
+
 </head>
 <body>
 
@@ -457,12 +462,17 @@ ${p.CODIGO
 ?`<div class="card-tag">Cód: ${p.CODIGO}</div>`
 :""}
 
+<div class="card-title-row">
 <div class="card-nombre">
 ${p.DETALLE||""}
 </div>
+<button class="copy-btn"
+onclick="copiarNombre('${(p.DETALLE||"").replace(/'/g,"\\'")}')
+">⧉
+</button>
+</div>
 
 <div class="precio-hero">
-
 <div class="monto">
 ${hero}
 </div>
@@ -537,7 +547,7 @@ Cargar más productos
 document.getElementById("results").innerHTML=html;const btn=document.getElementById("loadMoreBtn");
   if(btn){
 btn.addEventListener("click",()=>{
-VISIBLE+=10;
+VISIBLE+=5;
 render(CURRENT_RESULTS.slice(0,VISIBLE),CURRENT_QUERY);
 });
 
@@ -552,14 +562,18 @@ if(window.scrollY>300){
 toTopBtn.classList.add("show");
 }else{
 toTopBtn.classList.remove("show");}
-
 });
 
-toTopBtn.addEventListener("click",()=>{
-
-window.scrollTo({top:0,behavior:"smooth"});
-
-});
+  // ──Copiar nombre Producto ──
+toTopBtn.addEventListener("click",()=>{window.scrollTo({top:0,behavior:"smooth"});});
+function copiarNombre(texto){
+navigator.clipboard.writeText(texto);
+const old=document.title;
+document.title="✓ Copiado";
+setTimeout(()=>{
+document.title=old;
+},800);
+}
 
 </script>
 </body>
