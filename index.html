@@ -162,7 +162,7 @@ body{font-family:'Nunito',sans-serif;background:var(--surface);color:var(--text)
 let DATA=[];
 let CURRENT_RESULTS=[];
 let CURRENT_QUERY="";
-let VISIBLE=10;
+let VISIBLE=5;
 let searchTimer;
 
 const API="https://script.google.com/macros/s/AKfycbwT3k-j686myvD9lIZh1AC0JlgCYoFdLkIUSufvssgceVVyeZufJXqiQFzf-KCPCZz5/exec";
@@ -356,7 +356,7 @@ detalle.includes(q)
 
 CURRENT_RESULTS=res;
 
-VISIBLE=10;
+VISIBLE=5;
 
 render(
 CURRENT_RESULTS.slice(0,VISIBLE),
