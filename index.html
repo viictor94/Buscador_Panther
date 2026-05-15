@@ -851,34 +851,82 @@ btn.innerHTML="⟳ Actualizar";
 
 /* INICIO */
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", async ()=>{
 
-document.getElementById("search").focus();
+  document.getElementById("search").focus();
 
-showWelcome();
+  showWelcome();
 
-const cache=localStorage.getItem("productos_cache");
+  // cargar cache local
+  const cache = localStorage.getItem("productos_cache");
 
-if(cache){
+  if(cache){
 
-try{
+    try{
 
-DATA=JSON.parse(cache);
+      DATA = JSON.parse(cache);
 
-setSpinner(true);
+      setSpinner(true);
 
-setStatus(
-"✓ Lista cargada — "+DATA.length+" productos",
-"ready"
-);
+      setStatus(
+        "✓ Lista guardada cargada — "+DATA.length+" productos",
+        "ready"
+      );
 
-}catch(e){
+    }catch(e){
 
-console.log(e);
+      console.log(e);
 
-}
+    }
 
-}
+  }
+
+  // si hay internet actualizar automáticamente
+  if(navigator.onLine){
+
+    try{
+
+      const response = await fetch(
+        API + "?t=" + Date.now(),
+        {
+          cache:"no-store"
+        }
+      );
+
+      const text = await response.text();
+
+      const data = JSON.parse(text);
+
+      DATA = data;
+
+      localStorage.setItem(
+        "productos_cache",
+        JSON.stringify(data)
+      );
+
+      setSpinner(true);
+
+      setStatus(
+        "✓ Lista actualizada — "+DATA.length+" productos",
+        "ready"
+      );
+
+    }catch(err){
+
+      console.log(err);
+
+    }
+
+  }else{
+
+    setStatus(
+      "⚠ Sin conexión — usando datos guardados",
+      "info"
+    );
+
+  }
+
+  updateConnectionStatus();
 
 });
 
@@ -1251,6 +1299,71 @@ document.title=old;
 
 }
 
+  /* SERVICE WORKER */
+
+if ("serviceWorker" in navigator) {
+
+  window.addEventListener("load", () => {
+
+    navigator.serviceWorker
+      .register("./sw.js")
+
+      .then((reg) => {
+
+        console.log("SW registrado");
+
+        // fuerza chequeo de updates
+        reg.update();
+
+      })
+
+      .catch((err) => {
+
+        console.log("SW error:", err);
+
+      });
+
+  });
+
+}
+
+  /* ONLINE / OFFLINE */
+
+function updateConnectionStatus(){
+
+  if(navigator.onLine){
+
+    setStatus(
+      "✓ Online — "+DATA.length+" productos",
+      "ready"
+    );
+
+    setSpinner(true);
+
+  }else{
+
+    setStatus(
+      "⚠ Sin conexión — usando lista guardada",
+      "info"
+    );
+
+    setSpinner(true);
+
+  }
+
+}
+
+window.addEventListener(
+  "online",
+  updateConnectionStatus
+);
+
+window.addEventListener(
+  "offline",
+  updateConnectionStatus
+);
+
+  
 </script>
 
 </body>
